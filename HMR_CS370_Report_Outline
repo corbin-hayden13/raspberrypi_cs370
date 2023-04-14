@@ -1,0 +1,9 @@
+•	Introduction
+     Video editing software has become widely used for a variety of purposes such as content creation and advertisement.  In one example regarding content creation, an original video, no matter the length, has a certain interface that shows different screens that can show gameplay footage and the one playing the game.  In the middle of said video, the editor may fade in an image or cut to an image to produce some sort of comedic effect or to advertise a sponsor.  However, it is quite rare to see direct color changes to a real-time stream.  This is exactly what we explored using a Raspberry Pi, a desktop, and a camera.
+•	Problem Characterization
+     For our project, we will record the ten most common colors from an original stream and make changes to them to customize the coloring of said stream.
+•	Proposed Solution and Implementation Strategy
+     Discussing the UI design
+     Discuss all of the modules implemented (in separate paragraphs for each one)
+•	Conclusions
+     Restating the problem, giving a summary of the problem and solution, describe how, with further evolution, this could be used to create more editing opportunities for content creation.

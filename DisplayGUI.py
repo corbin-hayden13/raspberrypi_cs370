@@ -33,6 +33,9 @@ def renderHeader(UI):
     headerFrame = tk.Label(master=UI, width=1600, height=100, bg="red")
     titleLabel = tk.Label(headerFrame, text="Camera Color Conversion")
     titleLabel.pack()
+    
+    temp_button = tk.Button(headerFrame, height=1, width=18, bg="white", text="Refresh Frame")
+    temp_button.pack(side=tk.RIGHT)
 
     return headerFrame
 
@@ -48,10 +51,15 @@ def print_color(color_val):
 
 
 def renderButtons(color_pallete_frame, button_array):
-    width = 20
-    height = width // 2
+    width = 18
+    height = 6
     for button in button_array:
         temp_frame = tk.Frame(master=color_pallete_frame)
+        
+        temp_color_hex_input_field = tk.Text(temp_frame, height=3, width=width)
+        temp_color_hex_input_field.insert("1.0", button)
+        temp_color_hex_input_field.pack(side=tk.BOTTOM)
+        
         temp_button = tk.Button(temp_frame, height=height, width=width, bg=button, text=button, command=lambda color=button:print_color(color))
         temp_button.pack(side=tk.LEFT)
 
@@ -61,25 +69,27 @@ def renderButtons(color_pallete_frame, button_array):
 def main():
     UI = tk.Tk()
 
-    # customCameraTitleFrame = renderHeader(UI)
+    customCameraTitleFrame = renderHeader(UI)
 
     colorPalletteFrame = renderColorPallete(UI)
 
     colors_array = ["red", "orange", "yellow", "green", "blue", "purple", "black", "brown", "grey", "white"]
     renderButtons(colorPalletteFrame, colors_array)
 
-    beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="blue")
-    beforeColorChangeLabel = tk.Label(beforeColorChangeFrame, text="Video Before Color Changes")
+    beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
+    # beforeColorChangeLabel = tk.Label(beforeColorChangeFrame, text="Video Before Color Changes")
     video_label = tk.Label(master=beforeColorChangeFrame)
     video_label.pack()
-    beforeColorChangeLabel.pack()
+    # beforeColorChangeLabel.pack()
 
-    afterColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="green")
+    afterColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
     afterColorChangeLabel = tk.Label(afterColorChangeFrame, text="Video After Color Changes")
+    # video_label_after = tk.Label(master=afterColorChangeFrame)
+    # video_label_after.pack()
     afterColorChangeLabel.pack()
-
-    # customCameraTitleFrame.pack(fill=tk.BOTH, side=tk.TOP)
-    # customCameraTitleFrame.pack_propagate(False)
+    
+    customCameraTitleFrame.pack(fill=tk.BOTH, side=tk.TOP)
+    #customCameraTitleFrame.pack_propagate(False)
 
     colorPalletteFrame.pack(fill=tk.BOTH, side=tk.BOTTOM)
     colorPalletteFrame.pack_propagate(False)
@@ -102,4 +112,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

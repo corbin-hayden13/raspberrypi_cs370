@@ -4,29 +4,8 @@
 
 import tkinter as tk
 import cv2
-from RealtimeVideo import get_video_frames
+from RealtimeVideo import run_video
 import threading
-from PIL import Image, ImageTk
-
-
-def run_video(video_label):
-    width = 960
-    height = 540
-
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("Failed to get from camera, exiting")
-        exit(1)
-
-    while True:
-        frame, colorFrame = get_video_frames(cap, width, height)
-        img = Image.fromarray(colorFrame)
-        imgtk = ImageTk.PhotoImage(image=img)
-        video_label.config(image=imgtk)
-        video_label.image = imgtk  # 1 - This one line stops flickering
-
-    cap.release()
-    cv2.destoryAllWindows()
 
 
 def renderHeader(UI):
@@ -77,19 +56,14 @@ def main():
     renderButtons(colorPalletteFrame, colors_array)
 
     beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
-    # beforeColorChangeLabel = tk.Label(beforeColorChangeFrame, text="Video Before Color Changes")
     video_label = tk.Label(master=beforeColorChangeFrame)
     video_label.pack()
-    # beforeColorChangeLabel.pack()
 
     afterColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
     afterColorChangeLabel = tk.Label(afterColorChangeFrame, text="Video After Color Changes")
-    # video_label_after = tk.Label(master=afterColorChangeFrame)
-    # video_label_after.pack()
     afterColorChangeLabel.pack()
     
     customCameraTitleFrame.pack(fill=tk.BOTH, side=tk.TOP)
-    #customCameraTitleFrame.pack_propagate(False)
 
     colorPalletteFrame.pack(fill=tk.BOTH, side=tk.BOTTOM)
     colorPalletteFrame.pack_propagate(False)
@@ -101,7 +75,6 @@ def main():
     afterColorChangeFrame.pack_propagate(False)
 
     video_input_thread = threading.Thread(target=run_video, args=(video_label,))
-
     video_input_thread.start()
 
     # UI.update()

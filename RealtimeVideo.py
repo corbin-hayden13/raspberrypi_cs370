@@ -1,5 +1,6 @@
-import numpy as np
+from PIL import Image, ImageTk
 import cv2
+import numpy as np
 
 
 def get_video_frames(capture_obj, width, height):
@@ -16,7 +17,24 @@ def get_video_frames(capture_obj, width, height):
     return frame, colorFrame
 
 
-def main():
+def add_frame_to_label(video_label, color_frame):
+    img = Image.fromarray(color_frame)
+    imgtk = ImageTk.PhotoImage(image=img)
+    video_label.config(image=imgtk)
+    video_label.image = imgtk  # 1 - This one line stops flickering
+
+
+# Color range should be BGR
+
+# ([0, 0, 0], [255, 255, 255])
+def change_frame_color(color_frame, old_color_range, new_color):
+    lower = np.array(old_color_range[0], dtype="uint8")
+    upper = np.array(old_color_range[1], dtype="unit8")
+
+    mask = cv2.inRange(color_frame, lower, upper)
+
+
+def run_video(video_label):
     width = 960
     height = 540
 
@@ -26,19 +44,9 @@ def main():
         exit(1)
 
     while True:
-        frame, colorFrame = get_video_frames(cap, width, height)
+        frame, color_frame = get_video_frames(cap, width, height)
+        add_frame_to_label(video_label, color_frame)
 
-        cv2.imshow('frame', frame)
-
-        # cv2 requries this key to output properly
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord("q"):
-            break
-
-    cv2.release()
-    cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    main()
+    cap.release()
+    cv2.destoryAllWindows()
 

@@ -5,12 +5,9 @@
 import tkinter as tk
 import cv2
 from RealtimeVideo import run_video, add_frame_to_label
-from ColorEditor import change_color
+from ColorEditor import change_color, rgb_to_name
 import threading
 from queue import Queue
-
-
-rgb_array = []
 
 
 def renderHeader(UI):
@@ -54,21 +51,20 @@ def renderButtons(color_pallete_frame, button_array):
         
         temp_button = tk.Button(temp_frame, height=height, width=width, bg=button, text=button, command=lambda color=button:print_color(color))
         temp_button.pack(side=tk.LEFT)
-
         temp_frame.pack(side=tk.LEFT)
 
 
 def main():
     UI = tk.Tk()
     frame_queue = Queue(300)
+    rgb_queue = Queue(2)
     changed_frames_queue = Queue(300)
 
-    customCameraTitleFrame = renderHeader(UI)
-
     colorPalletteFrame = renderColorPallete(UI)
+    colorPalletteFrame.pack(fill=tk.BOTH, side=tk.BOTTOM)
+    colorPalletteFrame.pack_propagate(False)
 
-    rgb_array
-    renderButtons(colorPalletteFrame, rgb_array)
+    customCameraTitleFrame = renderHeader(UI)
 
     beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
     video_label = tk.Label(master=beforeColorChangeFrame)
@@ -80,16 +76,13 @@ def main():
     
     customCameraTitleFrame.pack(fill=tk.BOTH, side=tk.TOP)
 
-    colorPalletteFrame.pack(fill=tk.BOTH, side=tk.BOTTOM)
-    colorPalletteFrame.pack_propagate(False)
-
     beforeColorChangeFrame.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
     beforeColorChangeFrame.pack_propagate(False)
 
     afterColorChangeFrame.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
     afterColorChangeFrame.pack_propagate(False)
 
-    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_array))
+    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue))
     video_input_thread.start()
 
     while True:
@@ -102,6 +95,20 @@ def main():
         color_change_thread.join()
         changed_frame = changed_frames_queue.get()
         add_frame_to_label(second_video, changed_frame)
+
+        if rgb_queue.qsize() > 0:
+            rgb_array = rgb_queue.get()
+            colorPalletteFrame.destroy()
+            colorPalletteFrame = renderColorPallete(UI)
+            colorPalletteFrame.pack(fill=tk.BOTH, side=tk.BOTTOM)
+            colorPalletteFrame.pack_propagate(False)
+
+            if len(rgb_array) > 0 and rgb_array is not None:
+                buttons = []
+                for rgb_val in rgb_array:
+                    buttons.append(rgb_to_name(rgb_val))
+
+                renderButtons(colorPalletteFrame, buttons)
 
         # Goes after all updates
         UI.update()

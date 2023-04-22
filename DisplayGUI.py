@@ -4,8 +4,12 @@
 
 import tkinter as tk
 import cv2
-from RealtimeVideo import run_video
+from RealtimeVideo import run_video, add_frame_to_label
 import threading
+from queue import Queue
+
+
+rgb_array = []
 
 
 def renderHeader(UI):
@@ -47,6 +51,7 @@ def renderButtons(color_pallete_frame, button_array):
 
 def main():
     UI = tk.Tk()
+    frame_queue = Queue(300)
 
     customCameraTitleFrame = renderHeader(UI)
 
@@ -74,11 +79,14 @@ def main():
     afterColorChangeFrame.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
     afterColorChangeFrame.pack_propagate(False)
 
-    video_input_thread = threading.Thread(target=run_video, args=(video_label,))
+    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_array))
     video_input_thread.start()
 
-    # UI.update()
-    UI.mainloop()
+    while True:
+        add_frame_to_label(video_label, frame_queue.get())
+
+        # Goes after all updates
+        UI.update()
 
     video_input_thread.join()
 

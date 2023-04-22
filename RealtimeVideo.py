@@ -56,7 +56,7 @@ def change_frame_color(color_frame, old_color_range, new_color):
     mask = cv2.inRange(color_frame, lower, upper)
 
 
-def run_video(frame_queue, rgb_queue, rgb_array):
+def run_video(frame_queue, rgb_queue):
     width = 960
     height = 540
 
@@ -70,7 +70,7 @@ def run_video(frame_queue, rgb_queue, rgb_array):
     
     most_common_colors = KMeans(n_clusters=10)     # Used and adapted from a website
     most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from a website
-    if rgb_array is None:
+    if rgb_queue.qsize() <= 0:
         rgb_queue.put(print_Common_RGB_Values(most_common_colors))
 
     while True:

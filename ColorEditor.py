@@ -64,7 +64,10 @@ def change_color(color_frame, find_rgb, new_rgb, changed_queue):
     upper = np.array(upper, dtype="uint8")
 
     mask = cv2.inRange(color_frame, lower, upper)
-    new_frame = cv2.bitwise_xor(color_frame, new_frame_mask, mask=mask)
+    new_frame = cv2.bitwise_and(color_frame, new_frame_mask, mask=mask)
+    mask = cv2.bitwise_not(mask)
+    new_frame = cv2.bitwise_not(color_frame, new_frame, mask=mask)
+    new_frame = cv2.bitwise_not(new_frame)
     changed_queue.put(new_frame)
 
 

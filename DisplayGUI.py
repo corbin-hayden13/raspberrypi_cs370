@@ -4,9 +4,8 @@
 
 import tkinter as tk
 import cv2
-from RealtimeVideo import run_video
+from RealtimeVideo import run_video, get_Common_RGB_Array
 import threading
-
 
 def renderHeader(UI):
     headerFrame = tk.Label(master=UI, width=1600, height=100, bg="red")
@@ -60,7 +59,7 @@ def main():
 
     colorPalletteFrame = renderColorPallete(UI)
 
-    colors_array = ["red", "orange", "yellow", "green", "blue", "purple", "black", "brown", "grey", "white"]
+    colors_array = get_Common_RGB_Array()
     renderButtons(colorPalletteFrame, colors_array)
 
     beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")

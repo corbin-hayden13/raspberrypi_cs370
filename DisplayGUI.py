@@ -37,19 +37,22 @@ def renderButtons(color_pallete_frame, button_array):
     for button in button_array:
         temp_frame = tk.Frame(master=color_pallete_frame)
         
-        temp_color_hex_input_field_G = tk.Text(temp_frame, height=3, width=width)
-        temp_color_hex_input_field_G.insert("1.0", button + " 3")
-        temp_color_hex_input_field_G.pack(side=tk.BOTTOM)
+        original_color_label = tk.Label(temp_frame, width=20, height=2, bg=button, text=button)
+        original_color_label.pack()
         
-        temp_color_hex_input_field_B = tk.Text(temp_frame, height=3, width=width)
-        temp_color_hex_input_field_B.insert("1.0", button + " 2")
-        temp_color_hex_input_field_B.pack(side=tk.BOTTOM)
+        r_scale = tk.Scale(temp_frame, from_=0, to=255, orient='horizontal')
+        r_scale.pack()
         
-        temp_color_hex_input_field_R = tk.Text(temp_frame, height=3, width=width)
-        temp_color_hex_input_field_R.insert("1.0", button + " 1")
-        temp_color_hex_input_field_R.pack(side=tk.BOTTOM)
+        g_scale = tk.Scale(temp_frame, from_=0, to=255, orient='horizontal')
+        g_scale.pack()
         
-        temp_button = tk.Button(temp_frame, height=height, width=width, bg=button, text=button, command=lambda color=button:print_color(color))
+        b_scale = tk.Scale(temp_frame, from_=0, to=255, orient='horizontal')
+        b_scale.pack()
+        
+        new_rgb_setting = [r_scale.get(), g_scale.get(), b_scale.get()]
+        new_rgb_name = rgb_to_name(new_rgb_setting)
+        
+        temp_button = tk.Button(temp_frame, height=height, width=width, bg=new_rgb_name, text=new_rgb_name, command=lambda color=new_rgb_name:print_color(color))
         temp_button.pack(side=tk.LEFT)
         temp_frame.pack(side=tk.LEFT)
 

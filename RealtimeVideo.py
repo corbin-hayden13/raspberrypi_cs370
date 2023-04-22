@@ -1,6 +1,7 @@
 from PIL import Image, ImageTk
 import cv2
 import numpy as np
+from queue import Queue
 
 
 def get_video_frames(capture_obj, width, height):
@@ -34,7 +35,7 @@ def change_frame_color(color_frame, old_color_range, new_color):
     mask = cv2.inRange(color_frame, lower, upper)
 
 
-def run_video(video_label):
+def run_video(frame_queue, rgb_array):
     width = 960
     height = 540
 
@@ -45,7 +46,7 @@ def run_video(video_label):
 
     while True:
         frame, color_frame = get_video_frames(cap, width, height)
-        add_frame_to_label(video_label, color_frame)
+        frame_queue.put(color_frame)
 
     cap.release()
     cv2.destoryAllWindows()

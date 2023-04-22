@@ -1,6 +1,6 @@
 import tkinter as tk
 from RealtimeVideo import run_video, add_frame_to_label
-from ColorEditor import change_color, rgb_to_name
+from ColorEditor import change_color, rgb_to_name, set_artificial_bound
 import threading
 from queue import Queue
 
@@ -12,6 +12,11 @@ def renderHeader(UI):
     
     temp_button = tk.Button(headerFrame, height=1, width=18, bg="white", text="Refresh Frame")
     temp_button.pack(side=tk.RIGHT)
+
+    scale = tk.Scale(master=headerFrame, from_=0, to=255, orient=tk.HORIZONTAL, length=200,
+                     command=lambda new_val:set_artificial_bound(new_val))
+    scale.pack(side=tk.LEFT)
+    scale.set(30)
 
     return headerFrame
 

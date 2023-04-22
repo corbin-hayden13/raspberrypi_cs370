@@ -7,9 +7,6 @@ from collections import Counter
 import cv2
 import numpy as np
 
-
-CommonRGBArray = []
-
 def get_video_frames(capture_obj, width, height):
     width_by_height = (width, height)
     ret, frame = capture_obj.read()
@@ -41,10 +38,7 @@ def change_frame_color(color_frame, old_color_range, new_color):
     mask = cv2.inRange(color_frame, lower, upper)
 
 
-def get_Common_RGB_Array():
-    return CommonRGBArray
-
-def print_Common_RGB_Values(k_cluster):
+def print_Common_RGB_Values(k_cluster, rgb_array):
     width = 300
     palette = np.zeros((50, width, 3), np.uint8)
     
@@ -61,11 +55,11 @@ def print_Common_RGB_Values(k_cluster):
         palette[:, step:int(step + perc[idx]*width+1), :] = centers
         step += int(perc[idx]*width+1)
         
-    CommonRGBArray = k_cluster.cluster_centers_
+    rgb_array = k_cluster.cluster_centers_
     return k_cluster.cluster_centers_
 
 
-def run_video(video_label):
+def run_video(video_label, rgb_array):
     width = 960
     height = 540
 
@@ -80,7 +74,7 @@ def run_video(video_label):
 
     most_common_colors = KMeans(n_clusters=10)     # Used and adapted from a website
     most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from a website
-    print(print_Common_RGB_Values(most_common_colors))
+    print(print_Common_RGB_Values(most_common_colors, rgb_array))
     
     while True:
         frame, color_frame = get_video_frames(cap, width, height)

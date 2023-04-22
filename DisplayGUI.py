@@ -73,17 +73,18 @@ def main():
     customCameraTitleFrame.pack(fill=tk.BOTH, side=tk.TOP)
 
     beforeColorChangeFrame.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
-    beforeColorChangeFrame.pack_propagate(False)
+    # beforeColorChangeFrame.pack_propagate(False)
 
     afterColorChangeFrame.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
-    afterColorChangeFrame.pack_propagate(False)
+    # afterColorChangeFrame.pack_propagate(False)
 
     video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue))
     video_input_thread.start()
 
+    # Input colors as BGR
     while True:
         color_frame = frame_queue.get()
-        color_change_thread = threading.Thread(target=change_color, args=(color_frame, [255, 255, 255], [100, 100, 100], changed_frames_queue))
+        color_change_thread = threading.Thread(target=change_color, args=(color_frame, [255, 255, 255], [0, 100, 255], changed_frames_queue))
         color_change_thread.start()
 
         add_frame_to_label(video_label, color_frame)

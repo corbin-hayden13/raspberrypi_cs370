@@ -4,8 +4,10 @@
 
 import tkinter as tk
 import cv2
-from RealtimeVideo import run_video, get_Common_RGB_Array
+from RealtimeVideo import run_video
 import threading
+
+rgb_array = []
 
 def renderHeader(UI):
     headerFrame = tk.Label(master=UI, width=1600, height=100, bg="red")
@@ -59,8 +61,8 @@ def main():
 
     colorPalletteFrame = renderColorPallete(UI)
 
-    colors_array = get_Common_RGB_Array()
-    renderButtons(colorPalletteFrame, colors_array)
+    rgb_array
+    renderButtons(colorPalletteFrame, rgb_array)
 
     beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
     video_label = tk.Label(master=beforeColorChangeFrame)
@@ -81,14 +83,13 @@ def main():
     afterColorChangeFrame.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
     afterColorChangeFrame.pack_propagate(False)
 
-    video_input_thread = threading.Thread(target=run_video, args=(video_label,))
+    video_input_thread = threading.Thread(target=run_video, args=(video_label, rgb_array))
     video_input_thread.start()
 
     # UI.update()
     UI.mainloop()
 
     video_input_thread.join()
-
 
 if __name__ == "__main__":
     main()

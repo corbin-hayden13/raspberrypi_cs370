@@ -10,6 +10,13 @@ import pandas as pd
 curr_new_rgb = [0, 0, 0]
 new_frame_mask = []
 
+artificial_bound = 0
+
+
+def set_artificial_bound(new_val):
+    global artificial_bound
+    artificial_bound = int(new_val)
+
 
 def make_rgb_list(color_table):
     rgb_list = []
@@ -42,13 +49,11 @@ def make_color_mask(color_frame, new_rgb):
 
 
 def change_color(color_frame, find_rgb, new_rgb, changed_queue):
-    global curr_new_rgb, new_frame_mask
+    global curr_new_rgb, new_frame_mask, artificial_bound
     if curr_new_rgb != new_rgb:
         curr_new_rgb = new_rgb
         new_frame_mask = make_color_mask(color_frame, new_rgb)
         new_frame_mask = np.array(new_frame_mask, dtype="uint8")
-
-    artificial_bound = 30
 
     lower = []
     upper = []

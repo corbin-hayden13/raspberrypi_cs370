@@ -1,7 +1,6 @@
 from PIL import Image, ImageTk
 import cv2
 import numpy as np
-from queue import Queue
 
 
 def get_video_frames(capture_obj, width, height):

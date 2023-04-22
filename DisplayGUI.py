@@ -5,6 +5,7 @@
 import tkinter as tk
 import cv2
 from RealtimeVideo import run_video, add_frame_to_label
+from ColorEditor import change_color
 import threading
 from queue import Queue
 
@@ -52,6 +53,7 @@ def renderButtons(color_pallete_frame, button_array):
 def main():
     UI = tk.Tk()
     frame_queue = Queue(300)
+    changed_frames_queue = Queue(300)
 
     customCameraTitleFrame = renderHeader(UI)
 
@@ -65,8 +67,8 @@ def main():
     video_label.pack()
 
     afterColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
-    afterColorChangeLabel = tk.Label(afterColorChangeFrame, text="Video After Color Changes")
-    afterColorChangeLabel.pack()
+    second_video = tk.Label(master=afterColorChangeFrame)
+    second_video.pack()
     
     customCameraTitleFrame.pack(fill=tk.BOTH, side=tk.TOP)
 
@@ -83,7 +85,15 @@ def main():
     video_input_thread.start()
 
     while True:
-        add_frame_to_label(video_label, frame_queue.get())
+        color_frame = frame_queue.get()
+        color_change_thread = threading.Thread(target=change_color, args=(color_frame, [255, 255, 255], [255, 255, 255], changed_frames_queue))
+        color_change_thread.start()
+
+        add_frame_to_label(video_label, color_frame)
+
+        color_change_thread.join()
+        changed_frame = changed_frames_queue.get()
+        add_frame_to_label(second_video, changed_frame)
 
         # Goes after all updates
         UI.update()

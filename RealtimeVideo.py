@@ -8,6 +8,8 @@ import cv2
 import numpy as np
 
 
+CommonRGBArray = []
+
 def get_video_frames(capture_obj, width, height):
     width_by_height = (width, height)
     ret, frame = capture_obj.read()
@@ -39,6 +41,9 @@ def change_frame_color(color_frame, old_color_range, new_color):
     mask = cv2.inRange(color_frame, lower, upper)
 
 
+def get_Common_RGB_Array():
+    return CommonRGBArray
+
 def print_Common_RGB_Values(k_cluster):
     width = 300
     palette = np.zeros((50, width, 3), np.uint8)
@@ -56,6 +61,7 @@ def print_Common_RGB_Values(k_cluster):
         palette[:, step:int(step + perc[idx]*width+1), :] = centers
         step += int(perc[idx]*width+1)
         
+    CommonRGBArray = k_cluster.cluster_centers_
     return k_cluster.cluster_centers_
 
 
@@ -68,30 +74,17 @@ def run_video(video_label):
         print("Failed to get from camera, exiting")
         exit(1)
 
-    while True:
-        frame, color_frame = get_video_frames(cap, width, height)
-        add_frame_to_label(video_label, color_frame)
-        
-        most_common_colors = KMeans(n_clusters=10)     # Used and adapted from a website
-        most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from a website
-        print(print_Common_RGB_Values(most_common_colors))
 
-    cap.release()
-    cv2.destoryAllWindows()
+    frame, color_frame = get_video_frames(cap, width, height)
+    add_frame_to_label(video_label, color_frame)
 
-def run_video(video_label):
-    width = 960
-    height = 540
-
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("Failed to get from camera, exiting")
-        exit(1)
-
+    most_common_colors = KMeans(n_clusters=10)     # Used and adapted from a website
+    most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from a website
+    print(print_Common_RGB_Values(most_common_colors))
+    
     while True:
         frame, color_frame = get_video_frames(cap, width, height)
         add_frame_to_label(video_label, color_frame)
 
     cap.release()
     cv2.destoryAllWindows()
-

@@ -1,6 +1,14 @@
+"""
+Source 1 - https://www.plus2net.com/python/tkinter-colors.php#google_vignette
+"""
+
 import cv2
 import numpy as np
 import pandas as pd
+
+
+curr_new_rgb = [0, 0, 0]
+new_frame_mask = []
 
 
 def make_rgb_list(color_table):
@@ -15,7 +23,8 @@ def make_rgb_list(color_table):
 
     return rgb_list
 
-color_table = pd.read_excel('tables/tk-colours.xlsx')
+
+color_table = pd.read_excel('tables/tk-colours.xlsx')  # Source 1
 color_dict = {}
 
 names = color_table["Name"].values.tolist()
@@ -25,7 +34,20 @@ for a in range(len(names)):
     color_dict[str(rgb_list[a])] = names[a]
 
 
+def make_color_mask(color_frame, new_rgb):
+    new_row = [new_rgb for pixel in range(len(color_frame[0]))]
+    ret_mask = [new_row for row in range(len(color_frame))]
+
+    return ret_mask
+
+
 def change_color(color_frame, find_rgb, new_rgb, changed_queue):
+    global curr_new_rgb, new_frame_mask
+    if curr_new_rgb != new_rgb:
+        curr_new_rgb = new_rgb
+        new_frame_mask = make_color_mask(color_frame, new_rgb)
+        new_frame_mask = np.array(new_frame_mask, dtype="uint8")
+
     artificial_bound = 30
 
     lower = []
@@ -42,7 +64,7 @@ def change_color(color_frame, find_rgb, new_rgb, changed_queue):
     upper = np.array(upper, dtype="uint8")
 
     mask = cv2.inRange(color_frame, lower, upper)
-    new_frame = cv2.bitwise_and(color_frame, color_frame, mask=mask)
+    new_frame = cv2.bitwise_xor(color_frame, new_frame_mask, mask=mask)
     changed_queue.put(new_frame)
 
 

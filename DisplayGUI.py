@@ -1,9 +1,4 @@
-"""
-1 - https://stackoverflow.com/questions/48364168/flickering-video-in-opencv-tkinter-integration
-"""
-
 import tkinter as tk
-import cv2
 from RealtimeVideo import run_video, add_frame_to_label
 from ColorEditor import change_color, rgb_to_name
 import threading
@@ -60,9 +55,10 @@ def main():
     rgb_queue = Queue(2)
     changed_frames_queue = Queue(300)
 
-    colorPalletteFrame = renderColorPallete(UI)
+    master_pallette_frame = renderColorPallete(UI)
+    master_pallette_frame.pack(fill=tk.BOTH, side=tk.BOTTOM)
+    colorPalletteFrame = renderColorPallete(master_pallette_frame)
     colorPalletteFrame.pack(fill=tk.BOTH, side=tk.BOTTOM)
-    colorPalletteFrame.pack_propagate(False)
 
     customCameraTitleFrame = renderHeader(UI)
 
@@ -87,7 +83,7 @@ def main():
 
     while True:
         color_frame = frame_queue.get()
-        color_change_thread = threading.Thread(target=change_color, args=(color_frame, [255, 255, 255], [255, 255, 255], changed_frames_queue))
+        color_change_thread = threading.Thread(target=change_color, args=(color_frame, [255, 255, 255], [100, 100, 100], changed_frames_queue))
         color_change_thread.start()
 
         add_frame_to_label(video_label, color_frame)
@@ -99,9 +95,8 @@ def main():
         if rgb_queue.qsize() > 0:
             rgb_array = rgb_queue.get()
             colorPalletteFrame.destroy()
-            colorPalletteFrame = renderColorPallete(UI)
-            colorPalletteFrame.pack(fill=tk.BOTH, side=tk.BOTTOM)
-            colorPalletteFrame.pack_propagate(False)
+            colorPalletteFrame = renderColorPallete(master_pallette_frame)
+            colorPalletteFrame.pack(fill=tk.BOTH)
 
             if len(rgb_array) > 0 and rgb_array is not None:
                 buttons = []

@@ -3,7 +3,6 @@ from sklearn.cluster import KMeans
 from collections import Counter
 import cv2
 import numpy as np
-from queue import Queue
 
 
 def get_video_frames(capture_obj, width, height):

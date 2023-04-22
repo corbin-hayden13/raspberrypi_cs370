@@ -4,6 +4,11 @@ from ColorEditor import change_color, rgb_to_name, set_artificial_bound
 from ColorUIElement import ColorUIElement
 import threading
 from queue import Queue
+import numpy as np
+
+
+find_bgr = [0, 0, 0]
+new_bgr = [0, 0, 0]
 
 
 def renderHeader(UI):
@@ -32,11 +37,18 @@ def print_color(color_val):
     print(color_val)
 
 
+def set_global_rgb_vals(rgb_to_find, set_as_rgb):
+    global find_bgr, new_bgr
+    find_bgr = rgb_to_find
+    find_bgr[0], find_bgr[2] = find_bgr[2], find_bgr[0]
+    new_bgr = set_as_rgb
+    new_bgr[0], new_bgr[2] = new_bgr[2], new_bgr[0]
+
+
 def renderButtons(color_pallete_frame, button_array):
     for button in button_array:
         new_element = ColorUIElement(color_pallete_frame, button)
-
-        #  temp_button.configure(bg=new_rgb_name, text=new_rgb_name, command=lambda color=new_rgb_name: print_color(color))
+        new_element.set_button_command(lambda a, b:set_global_rgb_vals(a, b))
 
 
 def main():
@@ -73,8 +85,9 @@ def main():
 
     # Input colors as BGR
     while True:
+        global find_bgr, new_bgr
         color_frame = frame_queue.get()
-        color_change_thread = threading.Thread(target=change_color, args=(color_frame, [255, 255, 255], [0, 100, 255], changed_frames_queue))
+        color_change_thread = threading.Thread(target=change_color, args=(color_frame, find_bgr, new_bgr, changed_frames_queue))
         color_change_thread.start()
 
         add_frame_to_label(video_label, color_frame)

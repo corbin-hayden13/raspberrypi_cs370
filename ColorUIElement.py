@@ -26,6 +26,7 @@ class ColorUIElement:
         self.height = height
         self.width = width
 
+        self.org_rgb = rgb_val
         self.rgb = [0, 0, 0]
 
         self.r_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_r(new_val))
@@ -42,8 +43,8 @@ class ColorUIElement:
         self.color_label.pack()
         self.color_button.pack()
 
-        self.frame.pack()
+        self.frame.pack(side=tk.LEFT)
 
     def set_button_command(self, new_command):
-        self.color_button.configure(command=new_command)
+        self.color_button.configure(command=lambda a=self.org_rgb, b=self.rgb:new_command(a, b))
 

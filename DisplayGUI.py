@@ -1,6 +1,7 @@
 import tkinter as tk
 from RealtimeVideo import run_video, add_frame_to_label
 from ColorEditor import change_color, rgb_to_name, set_artificial_bound
+from ColorUIElement import ColorUIElement
 import threading
 from queue import Queue
 
@@ -32,29 +33,10 @@ def print_color(color_val):
 
 
 def renderButtons(color_pallete_frame, button_array):
-    width = 18
-    height = 6
     for button in button_array:
-        temp_frame = tk.Frame(master=color_pallete_frame)
-        
-        original_color_label = tk.Label(temp_frame, width=20, height=2, bg=button, text=button)
-        original_color_label.pack()
-        
-        r_scale = tk.Scale(temp_frame, from_=0, to=255, orient='horizontal')
-        r_scale.pack()
-        
-        g_scale = tk.Scale(temp_frame, from_=0, to=255, orient='horizontal')
-        g_scale.pack()
-        
-        b_scale = tk.Scale(temp_frame, from_=0, to=255, orient='horizontal')
-        b_scale.pack()
-        
-        new_rgb_setting = [r_scale.get(), g_scale.get(), b_scale.get()]
-        new_rgb_name = rgb_to_name(new_rgb_setting)
-        
-        temp_button = tk.Button(temp_frame, height=height, width=width, bg=new_rgb_name, text=new_rgb_name, command=lambda color=new_rgb_name:print_color(color))
-        temp_button.pack(side=tk.LEFT)
-        temp_frame.pack(side=tk.LEFT)
+        new_element = ColorUIElement(color_pallete_frame, button)
+
+        #  temp_button.configure(bg=new_rgb_name, text=new_rgb_name, command=lambda color=new_rgb_name: print_color(color))
 
 
 def main():
@@ -108,11 +90,7 @@ def main():
             colorPalletteFrame.pack(fill=tk.BOTH)
 
             if len(rgb_array) > 0 and rgb_array is not None:
-                buttons = []
-                for rgb_val in rgb_array:
-                    buttons.append(rgb_to_name(rgb_val))
-
-                renderButtons(colorPalletteFrame, buttons)
+                renderButtons(colorPalletteFrame, rgb_array)
 
         # Goes after all updates
         UI.update()

@@ -5,12 +5,12 @@
 import tkinter as tk
 import cv2
 from RealtimeVideo import run_video, add_frame_to_label
-from ColorEditor import change_color
+from ColorEditor import change_color, rgb_to_name
 import threading
 from queue import Queue
 
 
-rgb_array = []
+rgb_array = None
 
 
 def renderHeader(UI):
@@ -59,16 +59,15 @@ def renderButtons(color_pallete_frame, button_array):
 
 
 def main():
+    global rgb_array
     UI = tk.Tk()
     frame_queue = Queue(300)
+    rgb_queue = Queue(2)
     changed_frames_queue = Queue(300)
 
     customCameraTitleFrame = renderHeader(UI)
 
     colorPalletteFrame = renderColorPallete(UI)
-
-    rgb_array
-    renderButtons(colorPalletteFrame, rgb_array)
 
     beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
     video_label = tk.Label(master=beforeColorChangeFrame)
@@ -89,7 +88,7 @@ def main():
     afterColorChangeFrame.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
     afterColorChangeFrame.pack_propagate(False)
 
-    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_array))
+    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue, rgb_array))
     video_input_thread.start()
 
     while True:
@@ -102,6 +101,11 @@ def main():
         color_change_thread.join()
         changed_frame = changed_frames_queue.get()
         add_frame_to_label(second_video, changed_frame)
+
+        if rgb_array is None:
+            rgb_array = rgb_queue.get()
+
+        if len(rgb_array) > 0: renderButtons(colorPalletteFrame, rgb_to_name(rgb_array[0]))
 
         # Goes after all updates
         UI.update()

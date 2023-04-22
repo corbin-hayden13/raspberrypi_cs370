@@ -1,11 +1,10 @@
-
-# Credit given to https://towardsdatascience.com/finding-most-common-colors-in-python-47ea0767a06a
-
 from PIL import Image, ImageTk
 from sklearn.cluster import KMeans
 from collections import Counter
 import cv2
 import numpy as np
+from queue import Queue
+
 
 def get_video_frames(capture_obj, width, height):
     width_by_height = (width, height)
@@ -26,16 +25,6 @@ def add_frame_to_label(video_label, color_frame):
     imgtk = ImageTk.PhotoImage(image=img)
     video_label.config(image=imgtk)
     video_label.image = imgtk  # 1 - This one line stops flickering
-
-
-# Color range should be BGR
-
-# ([0, 0, 0], [255, 255, 255])
-def change_frame_color(color_frame, old_color_range, new_color):
-    lower = np.array(old_color_range[0], dtype="uint8")
-    upper = np.array(old_color_range[1], dtype="unit8")
-
-    mask = cv2.inRange(color_frame, lower, upper)
 
 
 def print_Common_RGB_Values(k_cluster, rgb_array):
@@ -59,7 +48,17 @@ def print_Common_RGB_Values(k_cluster, rgb_array):
     return k_cluster.cluster_centers_
 
 
-def run_video(video_label, rgb_array):
+# Color range should be BGR
+
+# ([0, 0, 0], [255, 255, 255])
+def change_frame_color(color_frame, old_color_range, new_color):
+    lower = np.array(old_color_range[0], dtype="uint8")
+    upper = np.array(old_color_range[1], dtype="unit8")
+
+    mask = cv2.inRange(color_frame, lower, upper)
+
+
+def run_video(frame_queue, rgb_array):
     width = 960
     height = 540
 
@@ -68,17 +67,16 @@ def run_video(video_label, rgb_array):
         print("Failed to get from camera, exiting")
         exit(1)
 
-
     frame, color_frame = get_video_frames(cap, width, height)
-    add_frame_to_label(video_label, color_frame)
-
+    frame_queue.put(color_frame)
+    
     most_common_colors = KMeans(n_clusters=10)     # Used and adapted from a website
     most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from a website
     print(print_Common_RGB_Values(most_common_colors, rgb_array))
-    
+
     while True:
         frame, color_frame = get_video_frames(cap, width, height)
-        add_frame_to_label(video_label, color_frame)
+        frame_queue.put(color_frame)
 
     cap.release()
     cv2.destoryAllWindows()

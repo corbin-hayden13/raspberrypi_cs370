@@ -1,4 +1,6 @@
 from PIL import Image, ImageTk
+from sklearn.cluster import KMeans
+from collections import Counter
 import cv2
 import numpy as np
 from queue import Queue
@@ -25,6 +27,27 @@ def add_frame_to_label(video_label, color_frame):
     video_label.image = imgtk  # 1 - This one line stops flickering
 
 
+def print_Common_RGB_Values(k_cluster, rgb_array):
+    width = 300
+    palette = np.zeros((50, width, 3), np.uint8)
+    
+    n_pixels = len(k_cluster.labels_)
+    counter = Counter(k_cluster.labels_) # count how many pixels per cluster
+    perc = {}
+    for i in counter:
+        perc[i] = np.round(counter[i]/n_pixels, 2)
+    perc = dict(sorted(perc.items()))
+    
+    step = 0
+    
+    for idx, centers in enumerate(k_cluster.cluster_centers_): 
+        palette[:, step:int(step + perc[idx]*width+1), :] = centers
+        step += int(perc[idx]*width+1)
+        
+    rgb_array = k_cluster.cluster_centers_
+    return k_cluster.cluster_centers_
+
+
 # Color range should be BGR
 
 # ([0, 0, 0], [255, 255, 255])
@@ -44,10 +67,16 @@ def run_video(frame_queue, rgb_array):
         print("Failed to get from camera, exiting")
         exit(1)
 
+    frame, color_frame = get_video_frames(cap, width, height)
+    frame_queue.put(color_frame)
+    
+    most_common_colors = KMeans(n_clusters=10)     # Used and adapted from a website
+    most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from a website
+    print(print_Common_RGB_Values(most_common_colors, rgb_array))
+
     while True:
         frame, color_frame = get_video_frames(cap, width, height)
         frame_queue.put(color_frame)
 
     cap.release()
     cv2.destoryAllWindows()
-

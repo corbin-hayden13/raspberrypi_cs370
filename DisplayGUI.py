@@ -39,9 +39,17 @@ def renderButtons(color_pallete_frame, button_array):
     for button in button_array:
         temp_frame = tk.Frame(master=color_pallete_frame)
         
-        temp_color_hex_input_field = tk.Text(temp_frame, height=3, width=width)
-        temp_color_hex_input_field.insert("1.0", button)
-        temp_color_hex_input_field.pack(side=tk.BOTTOM)
+        temp_color_hex_input_field_G = tk.Text(temp_frame, height=3, width=width)
+        temp_color_hex_input_field_G.insert("1.0", button + " 3")
+        temp_color_hex_input_field_G.pack(side=tk.BOTTOM)
+        
+        temp_color_hex_input_field_B = tk.Text(temp_frame, height=3, width=width)
+        temp_color_hex_input_field_B.insert("1.0", button + " 2")
+        temp_color_hex_input_field_B.pack(side=tk.BOTTOM)
+        
+        temp_color_hex_input_field_R = tk.Text(temp_frame, height=3, width=width)
+        temp_color_hex_input_field_R.insert("1.0", button + " 1")
+        temp_color_hex_input_field_R.pack(side=tk.BOTTOM)
         
         temp_button = tk.Button(temp_frame, height=height, width=width, bg=button, text=button, command=lambda color=button:print_color(color))
         temp_button.pack(side=tk.LEFT)
@@ -57,8 +65,8 @@ def main():
 
     colorPalletteFrame = renderColorPallete(UI)
 
-    colors_array = ["red", "orange", "yellow", "green", "blue", "purple", "black", "brown", "grey", "white"]
-    renderButtons(colorPalletteFrame, colors_array)
+    rgb_array
+    renderButtons(colorPalletteFrame, rgb_array)
 
     beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
     video_label = tk.Label(master=beforeColorChangeFrame)

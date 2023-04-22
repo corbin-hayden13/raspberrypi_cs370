@@ -1,3 +1,7 @@
+"""
+Source 1 - https://stackoverflow.com/questions/48364168/flickering-video-in-opencv-tkinter-integration
+"""
+
 from PIL import Image, ImageTk
 from sklearn.cluster import KMeans
 from collections import Counter
@@ -23,7 +27,7 @@ def add_frame_to_label(video_label, color_frame):
     img = Image.fromarray(color_frame)
     imgtk = ImageTk.PhotoImage(image=img)
     video_label.config(image=imgtk)
-    video_label.image = imgtk  # 1 - This one line stops flickering
+    video_label.image = imgtk  # Source 1 - This one line stops flickering
 
 
 def print_Common_RGB_Values(k_cluster):
@@ -46,16 +50,6 @@ def print_Common_RGB_Values(k_cluster):
     return k_cluster.cluster_centers_
 
 
-# Color range should be BGR
-
-# ([0, 0, 0], [255, 255, 255])
-def change_frame_color(color_frame, old_color_range, new_color):
-    lower = np.array(old_color_range[0], dtype="uint8")
-    upper = np.array(old_color_range[1], dtype="unit8")
-
-    mask = cv2.inRange(color_frame, lower, upper)
-
-
 def run_video(frame_queue, rgb_queue):
     width = 960
     height = 540
@@ -68,7 +62,7 @@ def run_video(frame_queue, rgb_queue):
     frame, color_frame = get_video_frames(cap, width, height)
     frame_queue.put(color_frame)
     
-    most_common_colors = KMeans(n_clusters=10)     # Used and adapted from a website
+    most_common_colors = KMeans(n_clusters=5)     # Used and adapted from a website
     most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from a website
     if rgb_queue.qsize() <= 0:
         rgb_queue.put(print_Common_RGB_Values(most_common_colors))

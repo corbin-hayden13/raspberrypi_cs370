@@ -28,8 +28,7 @@ def renderHeader(UI):
 
 
 def renderColorPallete(UI):
-    palleteFrame = tk.Frame(master=UI, width=1600, height=200, bg="yellow")
-
+    palleteFrame = tk.Frame(master=UI, width=1600, height=250, bg="yellow")
     return palleteFrame
 
 
@@ -64,11 +63,11 @@ def main():
 
     customCameraTitleFrame = renderHeader(UI)
 
-    beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
+    beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=540, bg="black")
     video_label = tk.Label(master=beforeColorChangeFrame)
     video_label.pack()
 
-    afterColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
+    afterColorChangeFrame = tk.Frame(master=UI, width=800, height=540, bg="black")
     second_video = tk.Label(master=afterColorChangeFrame)
     second_video.pack()
     

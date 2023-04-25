@@ -50,9 +50,9 @@ def print_Common_RGB_Values(k_cluster):
     return k_cluster.cluster_centers_
 
 
-def run_video(frame_queue, rgb_queue):
-    width = 960
-    height = 540
+def run_video(frame_queue, rgb_queue, screen_width, screen_height):
+    width = int(screen_width / 2)
+    height = int(screen_height / 2) + int(screen_height / 7)
 
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():

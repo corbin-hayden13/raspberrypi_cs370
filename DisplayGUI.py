@@ -50,6 +50,7 @@ def renderButtons(color_pallete_frame, button_array, button_label_width, button_
 
 def main():
     UI = tk.Tk()
+    UI.resizable(width=False, height=False)
     
     screen_width = UI.winfo_screenwidth() - int((UI.winfo_screenwidth()) / 24)
     print(screen_width)

@@ -92,4 +92,3 @@ def rgb_to_name(rgb_val):
 
         color_name = color_dict[str(rgb_list[found_ind])]
         return color_name
-

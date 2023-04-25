@@ -12,16 +12,16 @@ new_bgr = [0, 0, 0]
 
 
 def renderHeader(UI):
-    headerFrame = tk.Label(master=UI, width=1600, height=100, bg="red")
+    headerFrame = tk.Frame(master=UI, width=1600, height=100, bg="red")
     titleLabel = tk.Label(headerFrame, text="Camera Color Conversion")
-    titleLabel.pack()
+    titleLabel.pack(fill=tk.BOTH)
     
     temp_button = tk.Button(headerFrame, height=1, width=18, bg="white", text="Refresh Frame")
-    temp_button.pack(side=tk.RIGHT)
+    temp_button.pack(fill=tk.BOTH, side=tk.RIGHT)
 
     scale = tk.Scale(master=headerFrame, from_=0, to=255, orient=tk.HORIZONTAL, length=200,
                      command=lambda new_val:set_artificial_bound(new_val))
-    scale.pack(side=tk.LEFT)
+    scale.pack(fill=tk.BOTH, side=tk.LEFT)
     scale.set(30)
 
     return headerFrame
@@ -65,11 +65,11 @@ def main():
 
     beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=540, bg="black")
     video_label = tk.Label(master=beforeColorChangeFrame)
-    video_label.pack()
+    video_label.pack(fill=tk.BOTH)
 
     afterColorChangeFrame = tk.Frame(master=UI, width=800, height=540, bg="black")
     second_video = tk.Label(master=afterColorChangeFrame)
-    second_video.pack()
+    second_video.pack(fill=tk.BOTH)
     
     customCameraTitleFrame.pack(fill=tk.BOTH, side=tk.TOP)
 

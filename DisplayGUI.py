@@ -11,25 +11,22 @@ find_bgr = [0, 0, 0]
 new_bgr = [0, 0, 0]
 
 
-def renderHeader(UI):
-    headerFrame = tk.Label(master=UI, width=1600, height=100, bg="red")
-    titleLabel = tk.Label(headerFrame, text="Camera Color Conversion")
-    titleLabel.pack()
+def renderHeader(UI, screen_width, screen_height):
+    headerFrame = tk.Frame(master=UI, width=int(screen_width), height=int(screen_height/16), bg="red")
     
     temp_button = tk.Button(headerFrame, height=1, width=18, bg="white", text="Refresh Frame")
-    temp_button.pack(side=tk.RIGHT)
+    temp_button.pack(fill=tk.BOTH, side=tk.RIGHT)
 
     scale = tk.Scale(master=headerFrame, from_=0, to=255, orient=tk.HORIZONTAL, length=200,
                      command=lambda new_val:set_artificial_bound(new_val))
-    scale.pack(side=tk.LEFT)
+    scale.pack(fill=tk.BOTH, side=tk.LEFT)
     scale.set(30)
 
     return headerFrame
 
 
-def renderColorPallete(UI):
-    palleteFrame = tk.Frame(master=UI, width=1600, height=200, bg="yellow")
-
+def renderColorPallete(UI, screen_width, screen_height):
+    palleteFrame = tk.Frame(master=UI, width=int(screen_width), height=int(screen_height/6), bg="yellow")
     return palleteFrame
 
 
@@ -45,42 +42,49 @@ def set_global_rgb_vals(rgb_to_find, set_as_rgb):
     new_bgr[0], new_bgr[2] = new_bgr[2], new_bgr[0]
 
 
-def renderButtons(color_pallete_frame, button_array):
+def renderButtons(color_pallete_frame, button_array, button_label_width, button_label_height):
     for button in button_array:
-        new_element = ColorUIElement(color_pallete_frame, button)
+        new_element = ColorUIElement(color_pallete_frame, button, button_label_width, button_label_height)
         new_element.set_button_command(lambda a, b:set_global_rgb_vals(a, b))
 
 
 def main():
     UI = tk.Tk()
+    
+    screen_width = UI.winfo_screenwidth() - int((UI.winfo_screenwidth()) / 24)
+    print(screen_width)
+    screen_height = UI.winfo_screenheight() - int((UI.winfo_screenheight()) / 8)
+    print(screen_height)
+    UI.geometry("%dx%d" % (screen_width, screen_height))
+    
     frame_queue = Queue(300)
     rgb_queue = Queue(2)
     changed_frames_queue = Queue(300)
 
-    master_pallette_frame = renderColorPallete(UI)
-    master_pallette_frame.pack(fill=tk.BOTH, side=tk.BOTTOM)
-    colorPalletteFrame = renderColorPallete(master_pallette_frame)
-    colorPalletteFrame.pack(fill=tk.BOTH, side=tk.BOTTOM)
+    customCameraTitleFrame = renderHeader(UI, screen_width, screen_height)
 
-    customCameraTitleFrame = renderHeader(UI)
-
-    beforeColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
+    beforeColorChangeFrame = tk.Frame(master=UI, width=int(screen_width), height=int(screen_height / 2) + int(screen_height / 8), bg="blue")
     video_label = tk.Label(master=beforeColorChangeFrame)
-    video_label.pack()
+    video_label.pack(fill=tk.BOTH, side=tk.LEFT)
+    second_video = tk.Label(master=beforeColorChangeFrame)
+    second_video.pack(fill=tk.BOTH, side=tk.RIGHT)
 
-    afterColorChangeFrame = tk.Frame(master=UI, width=800, height=600, bg="black")
-    second_video = tk.Label(master=afterColorChangeFrame)
-    second_video.pack()
+    colorPalletteFrame = renderColorPallete(UI, screen_width, screen_width)
     
-    customCameraTitleFrame.pack(fill=tk.BOTH, side=tk.TOP)
+    UI.rowconfigure(0, weight = 2)
+    UI.rowconfigure(1, weight = 1)
+    UI.rowconfigure(2, weight = 2)
+    
+    UI.columnconfigure(0, weight = 1)
+    UI.columnconfigure(1, weight = 1)
+    
+    customCameraTitleFrame.grid(row = 0, column = 0)
 
-    beforeColorChangeFrame.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
-    # beforeColorChangeFrame.pack_propagate(False)
+    beforeColorChangeFrame.grid(row = 1, column = 0)
+    
+    colorPalletteFrame.grid(row = 2, column = 0)
 
-    afterColorChangeFrame.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
-    # afterColorChangeFrame.pack_propagate(False)
-
-    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue))
+    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue, screen_width, screen_height))
     video_input_thread.start()
 
     # Input colors as BGR
@@ -99,11 +103,11 @@ def main():
         if rgb_queue.qsize() > 0:
             rgb_array = rgb_queue.get()
             colorPalletteFrame.destroy()
-            colorPalletteFrame = renderColorPallete(master_pallette_frame)
-            colorPalletteFrame.pack(fill=tk.BOTH)
+            colorPalletteFrame = renderColorPallete(UI, screen_width, screen_width)
+            colorPalletteFrame.grid(row = 2, column = 0)
 
             if len(rgb_array) > 0 and rgb_array is not None:
-                renderButtons(colorPalletteFrame, rgb_array)
+                renderButtons(colorPalletteFrame, rgb_array, int(screen_width / 77), 2)
 
         # Goes after all updates
         UI.update()

@@ -19,12 +19,12 @@ class ColorUIElement:
         self.rgb[2] = int(new_val)
         self.update_button()
 
-    def __init__(self, master, rgb_val, height=18, width=6):
+    def __init__(self, master, rgb_val, width, height,):
         self.color_name = rgb_to_name(rgb_val)
         self.frame = tk.Frame(master=master)
 
-        self.height = height
         self.width = width
+        self.height = height
 
         self.org_rgb = rgb_val
         self.rgb = [0, 0, 0]
@@ -33,18 +33,16 @@ class ColorUIElement:
         self.g_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_g(new_val))
         self.b_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_b(new_val))
 
-        self.r_scale.pack()
-        self.g_scale.pack()
-        self.b_scale.pack()
+        self.color_label = tk.Label(self.frame, width=19, height=2, bg=self.color_name, text=self.color_name)
+        self.color_button = tk.Button(self.frame, width=19, height=2, bg=self.color_name, text=self.color_name)
 
-        self.color_label = tk.Label(self.frame, width=20, height=2, bg=self.color_name, text=self.color_name)
-        self.color_button = tk.Button(self.frame, height=height, width=width, bg=self.color_name, text=self.color_name)
+        self.color_label.pack(fill=tk.BOTH)
+        self.r_scale.pack(fill=tk.BOTH)
+        self.g_scale.pack(fill=tk.BOTH)
+        self.b_scale.pack(fill=tk.BOTH)
+        self.color_button.pack(fill=tk.BOTH)
 
-        self.color_label.pack()
-        self.color_button.pack()
-
-        self.frame.pack(side=tk.LEFT)
+        self.frame.pack(fill=tk.BOTH, side=tk.LEFT)
 
     def set_button_command(self, new_command):
         self.color_button.configure(command=lambda a=self.org_rgb, b=self.rgb:new_command(a, b))
-

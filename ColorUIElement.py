@@ -1,6 +1,7 @@
 import tkinter as tk
 from ColorEditor import rgb_to_name
 
+
 class ColorUIElement:
     def update_button(self):
         self.color_name = rgb_to_name(self.rgb)
@@ -35,13 +36,13 @@ class ColorUIElement:
         self.color_label = tk.Label(self.frame, width=20, height=2, bg=self.color_name, text=self.color_name)
         self.color_button = tk.Button(self.frame, height=2, width=20, bg=self.color_name, text=self.color_name)
 
-        self.color_label.pack()
-        self.r_scale.pack()
-        self.g_scale.pack()
-        self.b_scale.pack()
-        self.color_button.pack()
+        self.color_label.pack(fill=tk.BOTH)
+        self.r_scale.pack(fill=tk.BOTH)
+        self.g_scale.pack(fill=tk.BOTH)
+        self.b_scale.pack(fill=tk.BOTH)
+        self.color_button.pack(fill=tk.BOTH)
 
-        self.frame.pack(side=tk.LEFT)
+        self.frame.pack(fill=tk.BOTH, side=tk.LEFT)
 
     def set_button_command(self, new_command):
         self.color_button.configure(command=lambda a=self.org_rgb, b=self.rgb:new_command(a, b))

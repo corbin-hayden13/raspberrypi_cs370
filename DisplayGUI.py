@@ -4,7 +4,6 @@ from ColorEditor import change_color, rgb_to_name, set_artificial_bound
 from ColorUIElement import ColorUIElement
 import threading
 from queue import Queue
-import numpy as np
 
 
 find_bgr = [0, 0, 0]
@@ -37,9 +36,7 @@ def print_color(color_val):
 def set_global_rgb_vals(rgb_to_find, set_as_rgb):
     global find_bgr, new_bgr
     find_bgr = rgb_to_find
-    find_bgr[0], find_bgr[2] = find_bgr[2], find_bgr[0]
     new_bgr = set_as_rgb
-    new_bgr[0], new_bgr[2] = new_bgr[2], new_bgr[0]
 
 
 def renderButtons(color_pallete_frame, button_array, button_label_width, button_label_height):
@@ -57,7 +54,7 @@ def main():
     screen_height = UI.winfo_screenheight() - int((UI.winfo_screenheight()) / 8)
     print(screen_height)
     UI.geometry("%dx%d" % (screen_width, screen_height))
-    
+
     frame_queue = Queue(300)
     rgb_queue = Queue(2)
     changed_frames_queue = Queue(300)
@@ -72,18 +69,18 @@ def main():
 
     colorPalletteFrame = renderColorPallete(UI, screen_width, screen_width)
     
-    UI.rowconfigure(0, weight = 2)
-    UI.rowconfigure(1, weight = 1)
-    UI.rowconfigure(2, weight = 2)
+    UI.rowconfigure(0, weight=2)
+    UI.rowconfigure(1, weight=1)
+    UI.rowconfigure(2, weight=2)
     
-    UI.columnconfigure(0, weight = 1)
-    UI.columnconfigure(1, weight = 1)
+    UI.columnconfigure(0, weight=1)
+    UI.columnconfigure(1, weight=1)
     
-    customCameraTitleFrame.grid(row = 0, column = 0)
+    customCameraTitleFrame.grid(row=0, column=0)
 
-    beforeColorChangeFrame.grid(row = 1, column = 0)
+    beforeColorChangeFrame.grid(row=1, column=0)
     
-    colorPalletteFrame.grid(row = 2, column = 0)
+    colorPalletteFrame.grid(row=2, column=0)
 
     video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue, screen_width, screen_height))
     video_input_thread.start()
@@ -105,7 +102,7 @@ def main():
             rgb_array = rgb_queue.get()
             colorPalletteFrame.destroy()
             colorPalletteFrame = renderColorPallete(UI, screen_width, screen_width)
-            colorPalletteFrame.grid(row = 2, column = 0)
+            colorPalletteFrame.grid(row=2, column=0)
 
             if len(rgb_array) > 0 and rgb_array is not None:
                 renderButtons(colorPalletteFrame, rgb_array, int(screen_width / 77), 2)

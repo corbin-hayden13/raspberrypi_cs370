@@ -4,34 +4,39 @@ from ColorEditor import rgb_to_name
 
 class ColorUIElement:
     def update_button(self):
-        self.color_name = rgb_to_name(self.rgb)
+        self.color_name = rgb_to_name(self.bgr[::-1])
         self.color_button.configure(bg=self.color_name, text=self.color_name)
+        print(self.bgr[::-1])
 
     def set_r(self, new_val):
-        self.rgb[0] = int(new_val)
+        self.bgr[2] = int(new_val)
         self.update_button()
 
     def set_g(self, new_val):
-        self.rgb[1] = int(new_val)
+        self.bgr[1] = int(new_val)
         self.update_button()
 
     def set_b(self, new_val):
-        self.rgb[2] = int(new_val)
+        self.bgr[0] = int(new_val)
         self.update_button()
 
-    def __init__(self, master, rgb_val, width, height,):
+    def __init__(self, master, rgb_val, width, height):
         self.color_name = rgb_to_name(rgb_val)
         self.frame = tk.Frame(master=master)
 
         self.width = width
         self.height = height
 
-        self.org_rgb = rgb_val
-        self.rgb = [0, 0, 0]
+        self.org_bgr = rgb_val[::-1]
+        self.bgr = rgb_val[::-1]
 
         self.r_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_r(new_val))
         self.g_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_g(new_val))
         self.b_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_b(new_val))
+
+        self.r_scale.set(self.bgr[2])
+        self.g_scale.set(self.bgr[1])
+        self.b_scale.set(self.bgr[0])
 
         self.color_label = tk.Label(self.frame, width=19, height=2, bg=self.color_name, text=self.color_name)
         self.color_button = tk.Button(self.frame, width=19, height=2, bg=self.color_name, text=self.color_name)
@@ -45,4 +50,4 @@ class ColorUIElement:
         self.frame.pack(fill=tk.BOTH, side=tk.LEFT)
 
     def set_button_command(self, new_command):
-        self.color_button.configure(command=lambda a=self.org_rgb, b=self.rgb:new_command(a, b))
+        self.color_button.configure(command=lambda a=self.org_bgr, b=self.bgr:new_command(a, b))

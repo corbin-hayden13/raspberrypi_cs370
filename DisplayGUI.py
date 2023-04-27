@@ -1,3 +1,9 @@
+"""
+Source 1 - https://www.tutorialspoint.com/how-to-get-the-screen-size-in-tkinter#:~:text=In%20order%20to%20get%20the,of%20the%20screen%20in%20pixels. 
+Source 2 - https://www.tutorialspoint.com/how-can-i-prevent-a-window-from-being-resized-with-tkinter. 
+Source 3 - https://www.plus2net.com/python/tkinter-rowconfigure.php. 
+"""
+
 import tkinter as tk
 from RealtimeVideo import run_video, add_frame_to_label
 from ColorEditor import change_color, rgb_to_name, set_artificial_bound
@@ -50,13 +56,11 @@ def renderButtons(color_pallete_frame, button_array, button_label_width, button_
 
 def main():
     UI = tk.Tk()
-    UI.resizable(width=False, height=False)
+    UI.resizable(width=False, height=False)     # Used from Tutorials Point
     
-    screen_width = UI.winfo_screenwidth() - int((UI.winfo_screenwidth()) / 24)
-    print(screen_width)
-    screen_height = UI.winfo_screenheight() - int((UI.winfo_screenheight()) / 8)
-    print(screen_height)
-    UI.geometry("%dx%d" % (screen_width, screen_height))
+    screen_width = UI.winfo_screenwidth() - int((UI.winfo_screenwidth()) / 24)     # Adapted from Tutorials Point
+    screen_height = UI.winfo_screenheight() - int((UI.winfo_screenheight()) / 8)     # Adapted from Tutorials Point
+    UI.geometry("%dx%d" % (screen_width, screen_height))     # Used from Tutorials Point
     
     frame_queue = Queue(300)
     rgb_queue = Queue(2)
@@ -72,12 +76,12 @@ def main():
 
     colorPalletteFrame = renderColorPallete(UI, screen_width, screen_width)
     
-    UI.rowconfigure(0, weight = 2)
-    UI.rowconfigure(1, weight = 1)
-    UI.rowconfigure(2, weight = 2)
+    UI.rowconfigure(0, weight = 2)     # Adapted from plus2net
+    UI.rowconfigure(1, weight = 1)     # Adapted from plus2net
+    UI.rowconfigure(2, weight = 2)     # Adapted from plus2net
     
-    UI.columnconfigure(0, weight = 1)
-    UI.columnconfigure(1, weight = 1)
+    UI.columnconfigure(0, weight = 1)     # Adapted from plus2net
+    UI.columnconfigure(1, weight = 1)     # Adapted from plus2net
     
     customCameraTitleFrame.grid(row = 0, column = 0)
 

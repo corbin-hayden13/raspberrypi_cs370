@@ -1,5 +1,6 @@
 """
 Source 1 - https://stackoverflow.com/questions/48364168/flickering-video-in-opencv-tkinter-integration
+Source 2 - https://towardsdatascience.com/finding-most-common-colors-in-python-47ea0767a06a
 """
 
 from PIL import Image, ImageTk
@@ -29,25 +30,16 @@ def add_frame_to_label(video_label, color_frame):
     video_label.config(image=imgtk)
     video_label.image = imgtk  # Source 1 - This one line stops flickering
 
+# The following method is adapted from M. Rake Linggar A. on the website Towards Data Science
+def get_Common_RGB_Values(color_cluster):
+    color_pixels = len(color_cluster.labels_)
+    color_cluster_counter = Counter(color_cluster.labels_) # count how many pixels per cluster
+    percent_of_color = {}
+    for i in color_cluster_counter:
+        percent_of_color[i] = np.round(color_cluster_counter[i]/color_pixels, 2)
+    percent_of_color = dict(sorted(percent_of_color.items()))
 
-def print_Common_RGB_Values(k_cluster):
-    width = 300
-    palette = np.zeros((50, width, 3), np.uint8)
-    
-    n_pixels = len(k_cluster.labels_)
-    counter = Counter(k_cluster.labels_) # count how many pixels per cluster
-    perc = {}
-    for i in counter:
-        perc[i] = np.round(counter[i]/n_pixels, 2)
-    perc = dict(sorted(perc.items()))
-    
-    step = 0
-    
-    for idx, centers in enumerate(k_cluster.cluster_centers_): 
-        palette[:, step:int(step + perc[idx]*width+1), :] = centers
-        step += int(perc[idx]*width+1)
-
-    return k_cluster.cluster_centers_
+    return color_cluster.cluster_centers_
 
 
 def run_video(frame_queue, rgb_queue, screen_width, screen_height):
@@ -62,10 +54,10 @@ def run_video(frame_queue, rgb_queue, screen_width, screen_height):
     frame, color_frame = get_video_frames(cap, width, height)
     frame_queue.put(color_frame)
     
-    most_common_colors = KMeans(n_clusters=10)     # Used and adapted from a website
-    most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from a website
+    most_common_colors = KMeans(n_clusters=10)     # Used and adapted from M. Rake Linggar A. on the website Towards Data Science
+    most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from M. Rake Linggar A. on the website Towards Data Science
     if rgb_queue.qsize() <= 0:
-        rgb_queue.put(print_Common_RGB_Values(most_common_colors))
+        rgb_queue.put(get_Common_RGB_Values(most_common_colors))
 
     while True:
         frame, color_frame = get_video_frames(cap, width, height)

@@ -1,10 +1,12 @@
 """
 Source 1 - https://www.plus2net.com/python/tkinter-colors.php#google_vignette
+Source 2 - https://stackoverflow.com/questions/1847092/given-an-rgb-value-what-would-be-the-best-way-to-find-the-closest-match-in-the-d
 """
 
 import cv2
 import numpy as np
 import pandas as pd
+import math
 
 
 curr_new_bgr = [0, 0, 0]
@@ -90,16 +92,23 @@ def change_color(color_frame, find_bgr, new_bgr, changed_queue):
     changed_queue.put(new_frame)
 
 
-def rgb_to_name(rgb_val):
+def rgb_to_name(rgb_val):  # Source 2
+    wr = 1  #0.3
+    wg = 1  #0.59
+    wb = 1  #0.11
     try:
         color_name = color_dict[str(rgb_val)]
         return color_name
 
     except KeyError:
-        min_diff = 255 * 3 + 1
+        min_diff = math.sqrt(math.pow(255 * wr, 2) +
+                             math.pow(255 * wg, 2) +
+                             math.pow(255 * wb, 2))
         found_ind = 0
         for d in range(len(rgb_list)):
-            temp_diff = abs(sum(rgb_list[d]) - sum(rgb_val))
+            temp_diff = math.sqrt(math.pow((rgb_val[0] - rgb_list[d][0]) * wr, 2) +
+                                  math.pow((rgb_val[1] - rgb_list[d][1]) * wg, 2) +
+                                  math.pow((rgb_val[2] - rgb_list[d][2]) * wb, 2))
             if temp_diff < min_diff:
                 min_diff = temp_diff
                 found_ind = d

@@ -51,4 +51,4 @@ class ColorUIElement:
         self.frame.pack(fill=tk.BOTH, side=tk.LEFT)
 
     def set_button_command(self, new_command):
-        self.color_button.configure(command=lambda a=self.org_bgr, b=self.bgr:new_command(a, b))
+        self.color_button.configure(command=lambda a=self: new_command(a))

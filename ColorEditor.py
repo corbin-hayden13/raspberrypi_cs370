@@ -9,8 +9,6 @@ import pandas as pd
 import math
 
 
-curr_new_bgr = [0, 0, 0]
-new_frame_mask = []
 artificial_bound = 0
 
 
@@ -50,6 +48,7 @@ def make_color_mask(color_frame, new_bgr):
 
 
 def calc_lower_upper(find_bgr):
+    global artificial_bound
     lower = []
     upper = []
 
@@ -72,18 +71,13 @@ def bgr_equals(new_bgr):
     return True
 
 
-def change_color(color_frame, find_bgr, new_bgr, changed_queue):
-    global curr_new_bgr, new_frame_mask, artificial_bound
-    if not bgr_equals(new_bgr) or new_frame_mask == []:
-        print(f"Making mask for {rgb_to_name(new_bgr[::-1])}")
-        curr_new_bgr = new_bgr
-        new_frame_mask = make_color_mask(color_frame, new_bgr)
-        new_frame_mask = np.array(new_frame_mask, dtype="uint8")
+def change_color(color_frame, bgr_dict, changed_queue):
+    for color in list(bgr_dict.keys()):
+        lower, upper = calc_lower_upper(bgr_dict[color][0])
 
-    lower, upper = calc_lower_upper(find_bgr)
+        mask = cv2.inRange(color_frame, lower, upper)
+        color_frame[mask > 0] = bgr_dict[color][1][::-1]
 
-    mask = cv2.inRange(color_frame, lower, upper)
-    color_frame[mask > 0] = new_bgr[::-1]
     changed_queue.put(color_frame)
 
 

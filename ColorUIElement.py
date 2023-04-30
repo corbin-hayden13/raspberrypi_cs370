@@ -1,4 +1,5 @@
 import tkinter as tk
+from copy import deepcopy
 from ColorEditor import rgb_to_name
 
 
@@ -27,8 +28,8 @@ class ColorUIElement:
         self.width = width
         self.height = height
 
-        self.org_bgr = rgb_val[::-1]
-        self.bgr = rgb_val[::-1]
+        self.org_bgr = deepcopy(rgb_val[::-1])
+        self.bgr = deepcopy(rgb_val[::-1])
 
         self.r_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_r(new_val))
         self.g_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_g(new_val))

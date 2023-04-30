@@ -60,7 +60,7 @@ def calc_lower_upper(find_bgr):
         lower.append(sub_val)
         upper.append(add_val)
 
-    return lower, upper
+    return np.array(lower, dtype="uint8"), np.array(upper, dtype="uint8")
 
 
 def bgr_equals(new_bgr):
@@ -75,21 +75,16 @@ def bgr_equals(new_bgr):
 def change_color(color_frame, find_bgr, new_bgr, changed_queue):
     global curr_new_bgr, new_frame_mask, artificial_bound
     if not bgr_equals(new_bgr) or new_frame_mask == []:
+        print(f"Making mask for {rgb_to_name(new_bgr[::-1])}")
         curr_new_bgr = new_bgr
         new_frame_mask = make_color_mask(color_frame, new_bgr)
         new_frame_mask = np.array(new_frame_mask, dtype="uint8")
 
     lower, upper = calc_lower_upper(find_bgr)
 
-    lower = np.array(lower, dtype="uint8")
-    upper = np.array(upper, dtype="uint8")
-
     mask = cv2.inRange(color_frame, lower, upper)
-    new_frame = cv2.bitwise_and(color_frame, new_frame_mask, mask=mask)
-    mask = cv2.bitwise_not(mask)
-    new_frame = cv2.bitwise_not(color_frame, new_frame, mask=mask)
-    new_frame = cv2.bitwise_not(new_frame)
-    changed_queue.put(new_frame)
+    color_frame[mask > 0] = new_bgr[::-1]
+    changed_queue.put(color_frame)
 
 
 def rgb_to_name(rgb_val):  # Source 2

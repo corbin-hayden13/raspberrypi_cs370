@@ -1,14 +1,14 @@
 """
 Source 1 - https://www.plus2net.com/python/tkinter-colors.php#google_vignette
+Source 2 - https://stackoverflow.com/questions/1847092/given-an-rgb-value-what-would-be-the-best-way-to-find-the-closest-match-in-the-d
+Source 3 - https://stackoverflow.com/questions/50210304/change-the-colors-within-certain-range-to-another-color-using-opencv
 """
 
 import cv2
 import numpy as np
 import pandas as pd
+import math
 
-
-curr_new_rgb = [0, 0, 0]
-new_frame_mask = []
 
 artificial_bound = 0
 
@@ -41,54 +41,67 @@ for a in range(len(names)):
     color_dict[str(rgb_list[a])] = names[a]
 
 
-def make_color_mask(color_frame, new_rgb):
-    new_row = [new_rgb for pixel in range(len(color_frame[0]))]
+def make_color_mask(color_frame, new_bgr):
+    new_row = [new_bgr for pixel in range(len(color_frame[0]))]
     ret_mask = [new_row for row in range(len(color_frame))]
 
     return ret_mask
 
 
-def change_color(color_frame, find_rgb, new_rgb, changed_queue):
-    global curr_new_rgb, new_frame_mask, artificial_bound
-    if curr_new_rgb != new_rgb or new_frame_mask == []:
-        curr_new_rgb = new_rgb
-        new_frame_mask = make_color_mask(color_frame, new_rgb)
-        new_frame_mask = np.array(new_frame_mask, dtype="uint8")
-
+def calc_lower_upper(find_bgr):
+    global artificial_bound
     lower = []
     upper = []
 
-    for a in range(len(find_rgb)):
-        sub_val = find_rgb[a] - artificial_bound if find_rgb[a] - artificial_bound > 0 else 0
-        add_val = find_rgb[a] + artificial_bound if find_rgb[a] + artificial_bound < 255 else 255
+    for b in range(len(find_bgr)):  # Edit b, g, and r values
+        sub_val = find_bgr[b] - artificial_bound if find_bgr[b] - artificial_bound > 0 else 0
+        add_val = find_bgr[b] + artificial_bound if find_bgr[b] + artificial_bound < 255 else 255
 
         lower.append(sub_val)
         upper.append(add_val)
 
-    lower = np.array(lower, dtype="uint8")
-    upper = np.array(upper, dtype="uint8")
-
-    mask = cv2.inRange(color_frame, lower, upper)
-    new_frame = cv2.bitwise_and(color_frame, new_frame_mask, mask=mask)
-    mask = cv2.bitwise_not(mask)
-    new_frame = cv2.bitwise_not(color_frame, new_frame, mask=mask)
-    new_frame = cv2.bitwise_not(new_frame)
-    changed_queue.put(new_frame)
+    return np.array(lower, dtype="uint8"), np.array(upper, dtype="uint8")
 
 
-def rgb_to_name(rgb_val):
+def bgr_equals(new_bgr):
+    global curr_new_bgr
+    for c in range(len(new_bgr)):
+        if new_bgr[c] != curr_new_bgr[c]:
+            return False
+
+    return True
+
+
+def change_color(color_frame, bgr_dict, changed_queue):
+    for color in list(bgr_dict.keys()):
+        lower, upper = calc_lower_upper(bgr_dict[color][0])
+
+        mask = cv2.inRange(color_frame, lower, upper)
+        color_frame[mask > 0] = bgr_dict[color][1][::-1]  # Source 3
+
+    changed_queue.put(color_frame)
+
+
+def rgb_to_name(rgb_val):  # Source 2
+    wr = 1  #0.3
+    wg = 1  #0.59
+    wb = 1  #0.11
     try:
         color_name = color_dict[str(rgb_val)]
         return color_name
 
     except KeyError:
-        min_diff = 255 * 3 + 1
+        min_diff = math.sqrt(math.pow(255 * wr, 2) +
+                             math.pow(255 * wg, 2) +
+                             math.pow(255 * wb, 2))
         found_ind = 0
-        for a in range(len(rgb_list)):
-            temp_diff = abs(sum(rgb_list[a]) - sum(rgb_val))
+        for d in range(len(rgb_list)):
+            temp_diff = math.sqrt(math.pow((rgb_val[0] - rgb_list[d][0]) * wr, 2) +
+                                  math.pow((rgb_val[1] - rgb_list[d][1]) * wg, 2) +
+                                  math.pow((rgb_val[2] - rgb_list[d][2]) * wb, 2))
             if temp_diff < min_diff:
                 min_diff = temp_diff
-                found_ind = a
+                found_ind = d
 
         color_name = color_dict[str(rgb_list[found_ind])]
         return color_name

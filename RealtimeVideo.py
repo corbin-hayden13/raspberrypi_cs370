@@ -3,11 +3,15 @@ Source 1 - https://stackoverflow.com/questions/48364168/flickering-video-in-open
 Source 2 - https://towardsdatascience.com/finding-most-common-colors-in-python-47ea0767a06a
 """
 
+from EventHandler import EventHandler
 from PIL import Image, ImageTk
 from sklearn.cluster import KMeans
 from collections import Counter
 import cv2
 import numpy as np
+
+
+running_video = True
 
 
 def get_video_frames(capture_obj, width, height):
@@ -42,7 +46,20 @@ def get_Common_RGB_Values(color_cluster):
     return color_cluster.cluster_centers_
 
 
-def run_video(frame_queue, rgb_queue, screen_width, screen_height):
+def get_common_colors(arg_list):
+    color_frame, rgb_queue = arg_list
+    most_common_colors = KMeans(n_clusters=10)  # Used and adapted from a website
+    most_common_colors.fit(color_frame.reshape(-1, 3))  # Used and adapted from a website
+    if rgb_queue.qsize() <= 0:
+        rgb_queue.put(print_Common_RGB_Values(most_common_colors))
+
+
+def run_video(frame_queue, rgb_queue, event_queue, screen_width, screen_height):
+    global running_video
+
+    handler = EventHandler()
+    handler.add_event("get_common_colors", get_common_colors)
+
     width = int(screen_width / 2)
     height = int(screen_height / 2) + int(screen_height / 8)
 
@@ -51,17 +68,17 @@ def run_video(frame_queue, rgb_queue, screen_width, screen_height):
         print("Failed to get from camera, exiting")
         exit(1)
 
-    frame, color_frame = get_video_frames(cap, width, height)
+    """frame, color_frame = get_video_frames(cap, width, height)
     frame_queue.put(color_frame)
-    
-    most_common_colors = KMeans(n_clusters=10)     # Used and adapted from M. Rake Linggar A. on the website Towards Data Science
-    most_common_colors.fit(color_frame.reshape(-1, 3))     # Used and adapted from M. Rake Linggar A. on the website Towards Data Science
-    if rgb_queue.qsize() <= 0:
-        rgb_queue.put(get_Common_RGB_Values(most_common_colors))
 
-    while True:
+    get_common_colors((color_frame, rgb_queue))"""
+
+    while running_video:
         frame, color_frame = get_video_frames(cap, width, height)
         frame_queue.put(color_frame)
+
+        while event_queue.qsize() > 0:
+            handler.handle_event((event_queue.get(), [color_frame, rgb_queue]))
 
     cap.release()
     cv2.destoryAllWindows()

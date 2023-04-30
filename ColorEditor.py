@@ -1,6 +1,7 @@
 """
 Source 1 - https://www.plus2net.com/python/tkinter-colors.php#google_vignette
 Source 2 - https://stackoverflow.com/questions/1847092/given-an-rgb-value-what-would-be-the-best-way-to-find-the-closest-match-in-the-d
+Source 3 - https://stackoverflow.com/questions/50210304/change-the-colors-within-certain-range-to-another-color-using-opencv
 """
 
 import cv2
@@ -76,7 +77,7 @@ def change_color(color_frame, bgr_dict, changed_queue):
         lower, upper = calc_lower_upper(bgr_dict[color][0])
 
         mask = cv2.inRange(color_frame, lower, upper)
-        color_frame[mask > 0] = bgr_dict[color][1][::-1]
+        color_frame[mask > 0] = bgr_dict[color][1][::-1]  # Source 3
 
     changed_queue.put(color_frame)
 

@@ -1,22 +1,30 @@
 import tkinter as tk
-from RealtimeVideo import run_video, add_frame_to_label
-from ColorEditor import change_color, rgb_to_name, set_artificial_bound
+from RealtimeVideo import run_video, add_frame_to_label, get_common_colors
+from ColorEditor import change_color, set_artificial_bound
 from ColorUIElement import ColorUIElement
 import threading
 from queue import Queue
 
 
 master_bgr_dict = {}
+event_queue = Queue(5)
+
+
+def refresh_colors():
+    global master_bgr_dict
+    master_bgr_dict = {}
+
+    event_queue.put("get_common_colors")
 
 
 def renderHeader(UI, screen_width, screen_height):
     headerFrame = tk.Frame(master=UI, width=int(screen_width), height=int(screen_height/16), bg="red")
     
-    temp_button = tk.Button(headerFrame, height=1, width=18, bg="white", text="Refresh Frame")
+    temp_button = tk.Button(headerFrame, height=1, width=18, bg="white", text="Refresh Frame", command=refresh_colors)
     temp_button.pack(fill=tk.BOTH, side=tk.RIGHT)
 
     scale = tk.Scale(master=headerFrame, from_=0, to=255, orient=tk.HORIZONTAL, length=200,
-                     command=lambda new_val:set_artificial_bound(new_val))
+                     command=lambda new_val: set_artificial_bound(new_val))
     scale.pack(fill=tk.BOTH, side=tk.LEFT)
     scale.set(30)
 
@@ -81,12 +89,14 @@ def main():
     
     colorPalletteFrame.grid(row=2, column=0)
 
-    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue, screen_width, screen_height))
+    event_queue.put("get_common_colors")
+    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue, event_queue, screen_width, screen_height))
     video_input_thread.start()
 
     # Input colors as BGR
     while True:
         global master_bgr_dict
+
         color_frame = frame_queue.get()
         color_change_thread = threading.Thread(target=change_color, args=(color_frame, master_bgr_dict,
                                                                           changed_frames_queue))

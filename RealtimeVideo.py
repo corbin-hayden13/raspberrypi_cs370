@@ -48,10 +48,10 @@ def get_Common_RGB_Values(color_cluster):
 
 def get_common_colors(arg_list):
     color_frame, rgb_queue = arg_list
-    most_common_colors = KMeans(n_clusters=10)  # Used and adapted from a website
+    most_common_colors = KMeans(n_clusters=6)  # Used and adapted from a website
     most_common_colors.fit(color_frame.reshape(-1, 3))  # Used and adapted from a website
     if rgb_queue.qsize() <= 0:
-        rgb_queue.put(print_Common_RGB_Values(most_common_colors))
+        rgb_queue.put(get_Common_RGB_Values(most_common_colors))
 
 
 def run_video(frame_queue, rgb_queue, event_queue, screen_width, screen_height):

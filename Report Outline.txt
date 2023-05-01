@@ -50,7 +50,47 @@ Proposed Solution and Implementation Strategy
      * Explain the approach to the interface
      * Describe planning of layout
      * Challenges with rendering and programmatic element generation
+       * What prompted the need to create an entire class for UI elements?
+       * Discuss initial implementation of rgb format
+       * Discuss challenges faced with rgb format implementation
+       * Discuss solution of bgr implementation;  Does reversing list order incur a performance penalty?
+     * Discuss issues with python parameter reference scheme and challenges around deepcopying lists
+     * Refactor due to screen requirements
 
    - Find Most common Colors
      * Why sklearn?
-     * Discuss research of how to get the
+     * Discuss research of how to get the most common colors in a frame
+       * M. Rake Linggar L. on the website “Towards Data Science” - https://towardsdatascience.com/finding-most-common-colors-in-python-47ea0767a06a
+     * Refactor to support refresh button
+     * Why was the decision made to only find the common colors in the first frame?
+
+   - Getting Real Time Video
+     * Why cv2?
+     * Discuss challenges with frame rate
+     * Discuss decision to multithread the video
+     * Discuss frame queue and handling distributing the color frames throughout the program
+     * Why separate RealtimeVideo from DisplayGUI?
+
+   - Event Structure
+     * Why have a class to handle user events?
+     * why not use an external library for user events?
+     * Why make a scheme for user events when the only one implemented is refresh?
+     * Why did refresh require an event scheme?
+
+   - Editing Colors of New Frame
+     * Why a new file?
+     * Discuss original implementation of color editing
+     * Discuss challenges with bit masking
+     * Discuss solution and adding feature of editing more than one color
+     * Discuss decision to use named colors
+       * Why did you use names instead of changing UI elements with hex/rgb values?
+       * Was it worth it to use the excel table?
+     * Discuss implementing method to find the closest color to the color the user chose
+
+Conclusions
+ - Restate goals
+   * Goal: Exploring technology surrounding live video manipulation
+   * Goal: Learn to work within the restrictions of the Raspberry Pi hardware
+   * Goal: Determining the accessibility of real time video editing software...?
+
+ - Reflection and Retrospective

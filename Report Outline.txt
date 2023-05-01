@@ -50,7 +50,11 @@ Proposed Solution and Implementation Strategy
      * Explain the approach to the interface
      * Describe planning of layout
      * Challenges with rendering and programmatic element generation
+     * Refactor due to screen requirements
 
    - Find Most common Colors
      * Why sklearn?
-     * Discuss research of how to get the
+     * Discuss research of how to get the most common colors in a frame
+       * M. Rake Linggar L. on the website “Towards Data Science” - https://towardsdatascience.com/finding-most-common-colors-in-python-47ea0767a06a
+     * Refactor to support refresh button
+     * Why was the decision made to only find the common colors in the first frame?

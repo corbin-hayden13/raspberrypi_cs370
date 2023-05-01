@@ -9,7 +9,8 @@ from RealtimeVideo import run_video, add_frame_to_label, get_common_colors
 from ColorEditor import change_color, set_artificial_bound
 from ColorUIElement import ColorUIElement
 import threading
-from queue import Queue
+from multiprocessing import Process, Queue
+# from queue import Queue
 
 
 master_bgr_dict = {}
@@ -67,6 +68,8 @@ def main():
     
     frame_queue = Queue(300)
     rgb_queue = Queue(2)
+
+    color_args_queue = Queue(20)
     changed_frames_queue = Queue(300)
 
     customCameraTitleFrame = renderHeader(UI, screen_width, screen_height)
@@ -94,22 +97,24 @@ def main():
     colorPalletteFrame.grid(row=2, column=0)
 
     event_queue.put("get_common_colors")
-    video_input_thread = threading.Thread(target=run_video, args=(frame_queue, rgb_queue, event_queue, screen_width, screen_height))
+    video_input_thread = Process(target=run_video, args=(frame_queue, rgb_queue, event_queue, screen_width, screen_height))
     video_input_thread.start()
+
+    color_change_process = Process(target=change_color, args=(color_args_queue,))
+    print("Passed queue fine...")
+    color_change_process.start()
 
     # Input colors as BGR
     while True:
         global master_bgr_dict
 
         color_frame = frame_queue.get()
-        color_change_thread = threading.Thread(target=change_color, args=(color_frame, master_bgr_dict,
-                                                                          changed_frames_queue))
-        color_change_thread.start()
+        color_args_queue.put((color_frame, master_bgr_dict, changed_frames_queue))
 
         add_frame_to_label(video_label, color_frame)
 
-        color_change_thread.join()
         changed_frame = changed_frames_queue.get()
+        print("Got frame")
         add_frame_to_label(second_video, changed_frame)
 
         if rgb_queue.qsize() > 0:
@@ -124,6 +129,7 @@ def main():
         # Goes after all updates
         UI.update()
 
+    color_change_process.join(timeout=2)
     video_input_thread.join()
 
 

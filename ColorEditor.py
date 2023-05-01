@@ -72,7 +72,7 @@ def bgr_equals(new_bgr):
     return True
 
 
-def change_color(color_frame, bgr_dict, changed_queue):
+def __change_color_helper(color_frame, bgr_dict, changed_queue):
     for color in list(bgr_dict.keys()):
         lower, upper = calc_lower_upper(bgr_dict[color][0])
 
@@ -80,6 +80,12 @@ def change_color(color_frame, bgr_dict, changed_queue):
         color_frame[mask > 0] = bgr_dict[color][1][::-1]  # Source 3
 
     changed_queue.put(color_frame)
+
+
+def change_color(args_queue):
+    while args_queue.qsize() > 0:
+        color_frame, bgr_dict, changed_queue = args_queue.get()
+        __change_color_helper(color_frame, bgr_dict, changed_queue)
 
 
 def rgb_to_name(rgb_val):  # Source 2

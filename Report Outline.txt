@@ -43,7 +43,6 @@ Proposed Solution and Implementation Strategy
      * Discuss initial ideas for project
      * Discuss collaborative and iterative approach to refining idea for project
      * Discuss external influences, inspiration
-     * Why did we also want to find the six most common colors in the frame?
 
    - Graphical User Interface
      * Why tkinter?
@@ -94,3 +93,4 @@ Conclusions
    * Goal: Determining the accessibility of real time video editing software...?
 
  - Reflection and Retrospective
+   * Why did we also want to find the six most common colors in the frame?

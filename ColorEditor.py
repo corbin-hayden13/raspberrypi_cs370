@@ -83,9 +83,10 @@ def __change_color_helper(color_frame, bgr_dict, changed_queue):
 
 
 def change_color(args_queue):
-    while args_queue.qsize() > 0:
-        color_frame, bgr_dict, changed_queue = args_queue.get()
-        __change_color_helper(color_frame, bgr_dict, changed_queue)
+    while True:
+        while args_queue.qsize() > 0:
+            color_frame, bgr_dict, changed_queue = args_queue.get()
+            __change_color_helper(color_frame, bgr_dict, changed_queue)
 
 
 def rgb_to_name(rgb_val):  # Source 2

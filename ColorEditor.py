@@ -41,15 +41,7 @@ for a in range(len(names)):
     color_dict[str(rgb_list[a])] = names[a]
 
 
-def make_color_mask(color_frame, new_bgr):
-    new_row = [new_bgr for pixel in range(len(color_frame[0]))]
-    ret_mask = [new_row for row in range(len(color_frame))]
-
-    return ret_mask
-
-
 def calc_lower_upper(find_bgr):
-    global artificial_bound
     lower = []
     upper = []
 
@@ -63,16 +55,7 @@ def calc_lower_upper(find_bgr):
     return np.array(lower, dtype="uint8"), np.array(upper, dtype="uint8")
 
 
-def bgr_equals(new_bgr):
-    global curr_new_bgr
-    for c in range(len(new_bgr)):
-        if new_bgr[c] != curr_new_bgr[c]:
-            return False
-
-    return True
-
-
-def __change_color_helper(color_frame, bgr_dict, changed_queue):
+def change_color_helper(color_frame, bgr_dict, changed_queue):
     for color in list(bgr_dict.keys()):
         lower, upper = calc_lower_upper(bgr_dict[color][0])
 
@@ -82,17 +65,19 @@ def __change_color_helper(color_frame, bgr_dict, changed_queue):
     changed_queue.put(color_frame)
 
 
-def change_color(args_queue):
+def change_color(args_queue, changed_queue):
     while True:
-        while args_queue.qsize() > 0:
-            color_frame, bgr_dict, changed_queue = args_queue.get()
-            __change_color_helper(color_frame, bgr_dict, changed_queue)
+        if args_queue.qsize() > 0:
+            temp_tuple = args_queue.get()
+            color_frame = temp_tuple[0]
+            bgr_dict = temp_tuple[1]
+            change_color_helper(color_frame, bgr_dict, changed_queue)
 
 
 def rgb_to_name(rgb_val):  # Source 2
-    wr = 1  #0.3
-    wg = 1  #0.59
-    wb = 1  #0.11
+    wr = 1  # 0.3
+    wg = 1  # 0.59
+    wb = 1  # 0.11
     try:
         color_name = color_dict[str(rgb_val)]
         return color_name

@@ -31,9 +31,9 @@ class ColorUIElement:
         self.org_bgr = deepcopy(rgb_val[::-1])
         self.bgr = deepcopy(rgb_val[::-1])
 
-        self.r_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_r(new_val))
-        self.g_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_g(new_val))
-        self.b_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_b(new_val))
+        self.r_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val: self.set_r(new_val))
+        self.g_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val: self.set_g(new_val))
+        self.b_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val: self.set_b(new_val))
 
         self.r_scale.set(self.bgr[2])
         self.g_scale.set(self.bgr[1])

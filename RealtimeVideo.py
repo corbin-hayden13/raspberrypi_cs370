@@ -68,11 +68,6 @@ def run_video(frame_queue, rgb_queue, event_queue, screen_width, screen_height):
         print("Failed to get from camera, exiting")
         exit(1)
 
-    """frame, color_frame = get_video_frames(cap, width, height)
-    frame_queue.put(color_frame)
-
-    get_common_colors((color_frame, rgb_queue))"""
-
     while running_video:
         frame, color_frame = get_video_frames(cap, width, height)
         frame_queue.put(color_frame)

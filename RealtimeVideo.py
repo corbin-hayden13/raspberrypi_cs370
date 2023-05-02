@@ -9,6 +9,7 @@ from sklearn.cluster import KMeans
 from collections import Counter
 import cv2
 import numpy as np
+from queue import Empty
 
 
 running_video = True
@@ -41,13 +42,22 @@ def get_Common_RGB_Values(color_cluster):
     percent_of_color = {}
     for i in color_cluster_counter:
         percent_of_color[i] = np.round(color_cluster_counter[i]/color_pixels, 2)
-    percent_of_color = dict(sorted(percent_of_color.items()))
 
     return color_cluster.cluster_centers_
 
 
+def clear_queue(queue):
+    try:
+        while True:
+            queue.get_nowait()
+
+    except Empty:
+        pass
+
+
 def get_common_colors(arg_list):
-    color_frame, rgb_queue = arg_list
+    color_frame, rgb_queue, frame_queue = arg_list
+    clear_queue(frame_queue)
     most_common_colors = KMeans(n_clusters=6)  # Used and adapted from a website
     most_common_colors.fit(color_frame.reshape(-1, 3))  # Used and adapted from a website
     if rgb_queue.qsize() <= 0:
@@ -73,7 +83,7 @@ def run_video(frame_queue, rgb_queue, event_queue, screen_width, screen_height):
         frame_queue.put(color_frame)
 
         while event_queue.qsize() > 0:
-            handler.handle_event((event_queue.get(), [color_frame, rgb_queue]))
+            handler.handle_event((event_queue.get(), [color_frame, rgb_queue, frame_queue]))
 
     cap.release()
     cv2.destoryAllWindows()

@@ -6,13 +6,14 @@ Source 3 - https://www.plus2net.com/python/tkinter-rowconfigure.php.
 
 import tkinter as tk
 from RealtimeVideo import run_video, add_frame_to_label
-from ColorEditor import change_color, set_artificial_bound
+from ColorEditor import change_color
 from ColorUIElement import ColorUIElement
 from multiprocessing import Process, Queue
 
 
 master_bgr_dict = {}
 event_queue = Queue(5)
+artificial_bound = 0
 
 
 def refresh_colors():
@@ -22,7 +23,13 @@ def refresh_colors():
     event_queue.put("get_common_colors")
 
 
+def set_artificial_bound(new_val):
+    global artificial_bound
+    artificial_bound = int(new_val)
+
+
 def render_header(UI, screen_width, screen_height):
+    global artificial_bound
     header_frame = tk.Frame(master=UI, width=int(screen_width), height=int(screen_height/16), bg="red")
     
     temp_button = tk.Button(header_frame, height=1, width=18, bg="white", text="Refresh Frame", command=refresh_colors)
@@ -57,6 +64,8 @@ def render_buttons(color_palette_frame, button_array, button_label_width, button
 
 
 def main():
+    global master_bgr_dict, artificial_bound
+
     UI = tk.Tk()
     UI.resizable(width=False, height=False)     # Used from Tutorials Point
     
@@ -104,10 +113,8 @@ def main():
 
     # Input colors as BGR
     while True:
-        global master_bgr_dict
-
         color_frame = frame_queue.get()
-        color_args_queue.put((color_frame, master_bgr_dict))
+        color_args_queue.put((color_frame, master_bgr_dict, artificial_bound))
 
         add_frame_to_label(video_label, color_frame)
 

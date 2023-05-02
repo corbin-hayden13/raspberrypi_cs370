@@ -10,14 +10,6 @@ import pandas as pd
 import math
 
 
-artificial_bound = 0
-
-
-def set_artificial_bound(new_val):
-    global artificial_bound
-    artificial_bound = int(new_val)
-
-
 def make_rgb_list(color_table):
     rgb_list = []
 
@@ -41,7 +33,8 @@ for a in range(len(names)):
     color_dict[str(rgb_list[a])] = names[a]
 
 
-def calc_lower_upper(find_bgr):
+def calc_lower_upper(artificial_bound, find_bgr):
+    print(artificial_bound)
     lower = []
     upper = []
 
@@ -55,9 +48,12 @@ def calc_lower_upper(find_bgr):
     return np.array(lower, dtype="uint8"), np.array(upper, dtype="uint8")
 
 
-def change_color_helper(color_frame, bgr_dict, changed_queue):
+def change_color_helper(args, changed_queue):
+    color_frame = args[0]
+    bgr_dict = args[1]
+    artificial_bound = args[2]
     for color in list(bgr_dict.keys()):
-        lower, upper = calc_lower_upper(bgr_dict[color][0])
+        lower, upper = calc_lower_upper(artificial_bound, bgr_dict[color][0])
 
         mask = cv2.inRange(color_frame, lower, upper)
         color_frame[mask > 0] = bgr_dict[color][1][::-1]  # Source 3
@@ -68,10 +64,8 @@ def change_color_helper(color_frame, bgr_dict, changed_queue):
 def change_color(args_queue, changed_queue):
     while True:
         if args_queue.qsize() > 0:
-            temp_tuple = args_queue.get()
-            color_frame = temp_tuple[0]
-            bgr_dict = temp_tuple[1]
-            change_color_helper(color_frame, bgr_dict, changed_queue)
+            args = args_queue.get()
+            change_color_helper(args, changed_queue)
 
 
 def rgb_to_name(rgb_val):  # Source 2

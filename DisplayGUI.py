@@ -116,11 +116,6 @@ def main():
         color_frame = frame_queue.get()
         color_args_queue.put((color_frame, master_bgr_dict, artificial_bound))
 
-        add_frame_to_label(video_label, color_frame)
-
-        changed_frame = changed_frames_queue.get()
-        add_frame_to_label(second_video, changed_frame)
-
         if rgb_queue.qsize() > 0:
             rgb_array = rgb_queue.get()
             color_palette_frame.destroy()
@@ -130,6 +125,10 @@ def main():
             if len(rgb_array) > 0 and rgb_array is not None:
                 render_buttons(color_palette_frame, rgb_array, int(screen_width / 77), 2)
 
+        add_frame_to_label(video_label, color_frame)
+
+        changed_frame = changed_frames_queue.get()
+        add_frame_to_label(second_video, changed_frame)
         # Goes after all updates
         UI.update()
 

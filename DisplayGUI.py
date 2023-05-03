@@ -1,3 +1,7 @@
+# Joseph Michael Coffey IV – jmichaelc4@gmail.com – jmcoffey@colostate.edu 
+# Hayden Corbin - haydenfcorbin@gmail.com - hayden.corbin@colostate.edu 
+# Reilly Bergeron - reillybergeron@gmail.com - reillyjb@colostate.edu 
+
 """
 Source 1 - https://www.tutorialspoint.com/how-to-get-the-screen-size-in-tkinter#:~:text=In%20order%20to%20get%20the,of%20the%20screen%20in%20pixels. 
 Source 2 - https://www.tutorialspoint.com/how-can-i-prevent-a-window-from-being-resized-with-tkinter. 

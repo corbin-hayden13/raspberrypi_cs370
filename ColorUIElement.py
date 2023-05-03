@@ -22,14 +22,17 @@ class ColorUIElement:
         self.update_button()
 
     def __init__(self, master, rgb_val, width, height):
+            
+        #self.temp_rgb_val = deepcopy([int(x) for x in rgb_val[::-1]])
+        
         self.color_name = rgb_to_name(rgb_val)
         self.frame = tk.Frame(master=master)
 
         self.width = width
         self.height = height
 
-        self.org_bgr = deepcopy(rgb_val[::-1])
-        self.bgr = deepcopy(rgb_val[::-1])
+        self.org_bgr = deepcopy([int(x) for x in rgb_val[::-1]])
+        self.bgr = deepcopy([int(x) for x in rgb_val[::-1]])
 
         self.r_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_r(new_val))
         self.g_scale = tk.Scale(self.frame, from_=0, to=255, orient='horizontal', command=lambda new_val:self.set_g(new_val))

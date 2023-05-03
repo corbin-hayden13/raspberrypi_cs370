@@ -63,15 +63,6 @@ def calc_lower_upper(find_bgr):
     return np.array(lower, dtype="uint8"), np.array(upper, dtype="uint8")
 
 
-def bgr_equals(new_bgr):
-    global curr_new_bgr
-    for c in range(len(new_bgr)):
-        if new_bgr[c] != curr_new_bgr[c]:
-            return False
-
-    return True
-
-
 def change_color(color_frame, bgr_dict, changed_queue):
     for color in list(bgr_dict.keys()):
         lower, upper = calc_lower_upper(bgr_dict[color][0])
@@ -79,13 +70,13 @@ def change_color(color_frame, bgr_dict, changed_queue):
         mask = cv2.inRange(color_frame, lower, upper)
         color_frame[mask > 0] = bgr_dict[color][1][::-1]  # Source 3
 
-    changed_queue.put(color_frame)
+    changed_queue.appendleft(color_frame)
 
 
 def rgb_to_name(rgb_val):  # Source 2
-    wr = 1  #0.3
-    wg = 1  #0.59
-    wb = 1  #0.11
+    wr = 1  # 0.3
+    wg = 1  # 0.59
+    wb = 1  # 0.11
     try:
         color_name = color_dict[str(rgb_val)]
         return color_name

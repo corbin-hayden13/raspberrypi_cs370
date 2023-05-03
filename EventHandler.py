@@ -1,3 +1,7 @@
+# Joseph Michael Coffey IV – jmichaelc4@gmail.com – jmcoffey@colostate.edu 
+# Hayden Corbin - haydenfcorbin@gmail.com - hayden.corbin@colostate.edu 
+# Reilly Bergeron - reillybergeron@gmail.com - reillyjb@colostate.edu 
+
 class EventHandler:
     def __init__(self):
         self.events = {}

@@ -1,3 +1,7 @@
+# Joseph Michael Coffey IV – jmichaelc4@gmail.com – jmcoffey@colostate.edu 
+# Hayden Corbin - haydenfcorbin@gmail.com - hayden.corbin@colostate.edu 
+# Reilly Bergeron - reillybergeron@gmail.com - reillyjb@colostate.edu 
+
 """
 Source 1 - https://www.plus2net.com/python/tkinter-colors.php#google_vignette
 Source 2 - https://stackoverflow.com/questions/1847092/given-an-rgb-value-what-would-be-the-best-way-to-find-the-closest-match-in-the-d

@@ -1,3 +1,7 @@
+# Joseph Michael Coffey IV – jmichaelc4@gmail.com – jmcoffey@colostate.edu 
+# Hayden Corbin - haydenfcorbin@gmail.com - hayden.corbin@colostate.edu 
+# Reilly Bergeron - reillybergeron@gmail.com - reillyjb@colostate.edu 
+
 import tkinter as tk
 from copy import deepcopy
 from ColorEditor import rgb_to_name

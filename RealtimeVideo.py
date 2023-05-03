@@ -1,3 +1,7 @@
+# Joseph Michael Coffey IV – jmichaelc4@gmail.com – jmcoffey@colostate.edu 
+# Hayden Corbin - haydenfcorbin@gmail.com - hayden.corbin@colostate.edu 
+# Reilly Bergeron - reillybergeron@gmail.com - reillyjb@colostate.edu 
+
 """
 Source 1 - https://stackoverflow.com/questions/48364168/flickering-video-in-opencv-tkinter-integration
 Source 2 - https://towardsdatascience.com/finding-most-common-colors-in-python-47ea0767a06a
